@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CroupierMental</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+        :root{--bg:#050506;--bg2:#0c0c0e;--card:#111113;--card2:#18181b;--accent:#10b981;--accent2:#059669;--gold:#fbbf24;--purple:#a78bfa;--blue:#60a5fa;--text:#fafafa;--text2:#a1a1aa;--muted:#52525b;--border:#27272a;--border2:#3f3f46;--error:#f87171}
+        html,body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh;overflow-x:hidden;line-height:1.5;-webkit-font-smoothing:antialiased}
+        .ambient{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+        .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:.5;animation:float 25s ease-in-out infinite}
+        .orb1{width:350px;height:350px;background:radial-gradient(circle,rgba(16,185,129,.15) 0%,transparent 70%);top:-100px;left:-100px}
+        .orb2{width:280px;height:280px;background:radial-gradient(circle,rgba(251,191,36,.1) 0%,transparent 70%);bottom:-80px;right:-80px;animation-delay:-10s}
+        @keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(20px,-20px) scale(1.05)}}
+        #app{position:relative;z-index:2;min-height:100vh;min-height:100dvh}
+        .container{max-width:520px;margin:0 auto;padding:12px 16px 100px}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+        @keyframes pop{0%{transform:scale(.9);opacity:0}60%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
+        @keyframes glow{0%,100%{box-shadow:0 0 15px rgba(16,185,129,.2)}50%{box-shadow:0 0 25px rgba(16,185,129,.4)}}
+        @keyframes xpFloat{0%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-150%) scale(1.2)}}
+        @keyframes confettiFall{0%{opacity:1;transform:translateY(-50px) rotate(0)}100%{opacity:0;transform:translateY(100vh) rotate(720deg)}}
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+        @keyframes levelUp{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+        .fadeIn{animation:fadeIn .4s ease-out forwards}
+        
+        /* Header */
+        .header{display:flex;justify-content:space-between;align-items:center;padding:12px 0 16px}
+        .logo{display:flex;align-items:center;gap:10px;cursor:pointer;transition:transform .2s}
+        .logo:active{transform:scale(.97)}
+        .logo-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;box-shadow:0 4px 15px rgba(16,185,129,.35)}
+        .logo-text{font-size:19px;font-weight:800;letter-spacing:-.3px}
+        .logo-text span{background:linear-gradient(135deg,#34d399,var(--gold));background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+        .header-right{display:flex;align-items:center;gap:8px}
+        
+        /* Level Badge */
+        .level-badge{display:flex;align-items:center;gap:6px;padding:6px 10px;background:linear-gradient(135deg,rgba(96,165,250,.15),rgba(167,139,250,.1));border:1px solid rgba(96,165,250,.3);border-radius:10px;cursor:pointer;transition:all .2s}
+        .level-badge:hover{border-color:rgba(96,165,250,.5)}
+        .level-num{font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:800;color:var(--blue)}
+        .level-label{font-size:9px;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+        
+        /* Career Badge */
+        .career-badge{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 8px;background:var(--card);border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s}
+        .career-badge:hover{border-color:var(--border2);background:var(--card2)}
+        .career-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px}
+        .career-icon.debutant{background:linear-gradient(135deg,#6b7280,#4b5563)}
+        .career-icon.junior{background:linear-gradient(135deg,var(--accent),var(--accent2))}
+        .career-icon.confirme{background:linear-gradient(135deg,var(--gold),#f59e0b)}
+        .career-icon.senior{background:linear-gradient(135deg,#f97316,#ea580c)}
+        .career-icon.inspecteur{background:linear-gradient(135deg,var(--purple),#8b5cf6)}
+        .career-icon.directeur{background:linear-gradient(135deg,#ef4444,#dc2626)}
+        .career-info{display:flex;flex-direction:column;line-height:1.2}
+        .career-title{font-size:11px;font-weight:700}
+        .career-xp{font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+        
+        .streak-badge{display:flex;align-items:center;gap:4px;padding:8px 10px;background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(251,191,36,.05));border:1px solid rgba(251,191,36,.3);border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--gold)}
+        
+        /* Career Card */
+        .career-card{background:linear-gradient(135deg,var(--card) 0%,rgba(17,17,19,.8) 100%);border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:16px;position:relative;overflow:hidden}
+        .career-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--gold),var(--purple))}
+        .career-header{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+        .career-header-icon{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+        .career-header-info{flex:1}
+        .career-header-info h3{font-size:17px;font-weight:800;margin-bottom:2px;display:flex;align-items:center;gap:8px}
+        .career-header-info h3 .lvl{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--blue);background:rgba(96,165,250,.15);padding:2px 8px;border-radius:6px}
+        .career-header-info p{font-size:12px;color:var(--text2)}
+        .career-stats{display:flex;gap:16px;margin-bottom:16px}
+        .career-stat{text-align:center}
+        .career-stat-value{font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:800}
+        .career-stat-value.xp{color:var(--gold)}
+        .career-stat-value.acc{color:var(--accent)}
+        .career-stat-label{font-size:9px;color:var(--muted);text-transform:uppercase}
+        .career-progress-bar{height:10px;background:var(--bg2);border-radius:5px;overflow:hidden;margin-bottom:8px;position:relative}
+        .career-progress-fill{height:100%;border-radius:5px;transition:width .5s ease;position:relative}
+        .career-progress-fill::after{content:'';position:absolute;right:0;top:0;bottom:0;width:20px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3));animation:pulse 1.5s ease-in-out infinite}
+        .career-progress-text{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+        .career-progress-text strong{color:var(--text2);font-family:'JetBrains Mono',monospace}
+        .career-next{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg2);border-radius:10px;font-size:12px;color:var(--text2);margin-top:14px}
+        .career-next-icon{font-size:20px}
+        
+        /* XP Bonus Info */
+        .xp-bonus-info{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+        .xp-bonus{padding:4px 8px;background:var(--bg2);border-radius:6px;font-size:10px;color:var(--text2)}
+        .xp-bonus strong{color:var(--gold);font-family:'JetBrains Mono',monospace}
+        
+        /* Daily Section */
+        .daily-section{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:16px}
+        .daily-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+        .daily-title{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700}
+        .daily-title-icon{font-size:20px}
+        .daily-streak{font-size:12px;color:var(--text2)}
+        .daily-streak strong{color:var(--gold);font-family:'JetBrains Mono',monospace}
+        .daily-challenges{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+        .daily-challenge{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;position:relative;transition:all .2s}
+        .daily-challenge:hover{border-color:var(--border2);background:var(--card2)}
+        .daily-challenge:active{transform:scale(.98)}
+        .daily-challenge.completed{border-color:var(--accent);background:rgba(16,185,129,.1)}
+        .daily-challenge.completed::after{content:'✓';position:absolute;top:10px;right:10px;width:20px;height:20px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff}
+        .challenge-icon{font-size:24px;margin-bottom:8px}
+        .challenge-name{font-size:13px;font-weight:700;margin-bottom:3px}
+        .challenge-desc{font-size:10px;color:var(--muted);margin-bottom:10px}
+        .challenge-progress{height:5px;background:var(--bg);border-radius:3px;overflow:hidden}
+        .challenge-progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),#34d399);border-radius:3px}
+        .challenge-progress-text{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);margin-top:5px;text-align:right}
+        
+        /* Menu */
+        .menu-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin:8px 0 12px}
+        .menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
+        .menu-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;cursor:pointer;position:relative;transition:all .2s;overflow:hidden}
+        .menu-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 50%,rgba(255,255,255,.02) 100%);pointer-events:none}
+        .menu-card:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.3)}
+        .menu-card:active{transform:scale(.98) translateY(0)}
+        .menu-card.full{grid-column:span 2}
+        .menu-card.hl{border-color:rgba(16,185,129,.3);background:linear-gradient(135deg,rgba(16,185,129,.08),transparent)}
+        .menu-card-icon{width:44px;height:44px;background:var(--bg2);border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:22px}
+        .menu-card-title{font-size:15px;font-weight:700;margin-bottom:4px}
+        .menu-card-desc{font-size:11px;color:var(--text2);line-height:1.4}
+        .menu-card-badge{position:absolute;top:12px;right:12px;padding:4px 8px;background:linear-gradient(135deg,var(--gold),#f59e0b);border-radius:6px;font-size:9px;font-weight:800;color:var(--bg)}
+        
+        /* Game Modes */
+        .game-modes{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
+        .game-mode-btn{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px 14px;cursor:pointer;text-align:center;transition:all .2s}
+        .game-mode-btn:hover{border-color:var(--border2);transform:translateY(-2px)}
+        .game-mode-btn:active{transform:scale(.97)}
+        .game-mode-btn.active{border-color:var(--accent);background:rgba(16,185,129,.1)}
+        .game-mode-btn .icon{font-size:32px;margin-bottom:8px}
+        .game-mode-btn .label{font-size:14px;font-weight:700}
+        .game-mode-btn .sub{font-size:10px;color:var(--muted);margin-top:3px}
+        
+        /* Settings */
+        .settings-panel{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:16px}
+        .settings-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px}
+        .settings-options{display:flex;gap:6px;flex-wrap:wrap}
+        .settings-opt{padding:12px 10px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;font-size:11px;font-weight:600;cursor:pointer;color:var(--text);flex:1;text-align:center;min-width:55px;transition:all .2s}
+        .settings-opt:hover{border-color:var(--border2)}
+        .settings-opt.active{background:var(--accent);border-color:var(--accent);color:var(--bg)}
+        .settings-info{margin-top:14px;padding:12px;background:var(--bg2);border-radius:10px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+        .settings-info-item{font-size:9px;color:var(--text2);text-align:center}
+        .settings-info-item strong{display:block;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;margin-top:2px}
+        .settings-info-item strong.gold{color:var(--gold)}
+        
+        /* Buttons */
+        .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .2s}
+        .btn:active{transform:scale(.97)}
+        .btn-primary{background:linear-gradient(135deg,#34d399,var(--accent2));color:#fff;box-shadow:0 4px 15px rgba(16,185,129,.35)}
+        .btn-primary:hover{box-shadow:0 6px 20px rgba(16,185,129,.45)}
+        .btn-secondary{background:var(--card);color:var(--text);border:1px solid var(--border)}
+        .btn-large{width:100%;padding:16px 24px;font-size:15px}
+        .btn-back{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;padding:10px 0;margin-bottom:12px;transition:color .2s}
+        .btn-back:hover{color:var(--text2)}
+        
+        /* Tables */
+        .tables-section{margin-bottom:18px}
+        .tables-title{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+        .tables-title .badge{padding:3px 8px;background:linear-gradient(135deg,var(--gold),#f59e0b);border-radius:5px;font-size:8px;color:var(--bg);font-weight:800}
+        .tables-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+        .table-btn{padding:14px 8px;background:var(--card);border:1px solid var(--border);border-radius:10px;cursor:pointer;text-align:center;transition:all .2s}
+        .table-btn:hover{border-color:var(--border2)}
+        .table-btn:active{transform:scale(.95)}
+        .table-btn.active{background:rgba(16,185,129,.12);border-color:var(--accent)}
+        .table-btn.ess{border-color:rgba(251,191,36,.4);background:rgba(251,191,36,.08)}
+        .table-btn.ess.active{background:rgba(251,191,36,.18);border-color:var(--gold)}
+        .table-btn .num{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:800}
+        .table-btn.ess .num{color:var(--gold)}
+        
+        /* Game */
+        .game-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+        .game-info{display:flex;gap:6px}
+        .game-stat{text-align:center;padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:10px;min-width:52px}
+        .game-stat.hl{border-color:var(--accent);animation:glow 1.5s ease-in-out infinite}
+        .game-stat-value{font-family:'JetBrains Mono',monospace;font-size:17px;font-weight:800}
+        .game-stat-value.green{color:var(--accent)}
+        .game-stat-value.gold{color:var(--gold)}
+        .game-stat-value.red{color:var(--error)}
+        .game-stat-label{font-size:8px;color:var(--muted);text-transform:uppercase;margin-top:2px}
+        .combo-display{position:fixed;top:45%;right:16px;text-align:center;pointer-events:none;z-index:100;animation:pop .3s ease-out}
+        .combo-mult{font-family:'JetBrains Mono',monospace;font-size:34px;font-weight:800;background:linear-gradient(135deg,#fcd34d,var(--gold));background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 18px rgba(251,191,36,.5))}
+        .combo-label{font-size:9px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1px}
+        .timer-bar-bg{width:100%;height:6px;background:var(--bg2);border-radius:3px;overflow:hidden;margin-bottom:14px}
+        .timer-bar{height:100%;background:linear-gradient(90deg,var(--accent),#34d399);border-radius:3px;transition:width .1s linear}
+        .timer-bar.warn{background:linear-gradient(90deg,var(--gold),#fcd34d)}
+        .timer-bar.danger{background:linear-gradient(90deg,var(--error),#fca5a5)}
+        
+        /* Question */
+        .question-card{background:linear-gradient(135deg,var(--card) 0%,var(--card2) 100%);border:1px solid var(--border);border-radius:20px;padding:30px 20px;text-align:center;margin-bottom:14px;position:relative;transition:all .25s}
+        .question-card.correct{border-color:var(--accent);box-shadow:0 0 20px rgba(16,185,129,.2)}
+        .question-card.incorrect{border-color:var(--error);animation:shake .4s ease-in-out}
+        .question-badge{position:absolute;top:14px;left:14px;display:flex;align-items:center;gap:6px;padding:6px 10px;background:var(--bg2);border-radius:8px;font-size:11px;font-weight:600;color:var(--text2)}
+        .question-badge-icon{font-size:14px}
+        .question-context{font-size:13px;color:var(--text2);margin-bottom:12px;line-height:1.5}
+        .question-text{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:800;line-height:1.35;margin-bottom:6px;color:var(--text)}
+        .question-hint{font-size:11px;color:var(--muted);margin-top:8px}
+        
+        /* Answer */
+        .answer-input{width:100%;padding:18px 20px;font-family:'JetBrains Mono',monospace;font-size:28px;font-weight:700;text-align:center;background:var(--bg);border:2px solid var(--border);border-radius:14px;color:var(--text);outline:none;transition:all .2s;appearance:none;-webkit-appearance:none;margin-bottom:12px}
+        .answer-input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(16,185,129,.15)}
+        .answer-input.correct{border-color:var(--accent);background:rgba(16,185,129,.1)}
+        .answer-input.incorrect{border-color:var(--error);background:rgba(248,113,113,.1)}
+        .feedback{text-align:center;padding:14px 18px;border-radius:12px;margin-bottom:12px;font-weight:700;font-size:15px;animation:pop .3s ease-out}
+        .feedback.correct{background:rgba(16,185,129,.12);color:var(--accent);border:1px solid rgba(16,185,129,.25)}
+        .feedback.incorrect{background:rgba(248,113,113,.12);color:var(--error);border:1px solid rgba(248,113,113,.25)}
+        .feedback .ans{font-family:'JetBrains Mono',monospace;font-size:17px}
+        .xp-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:800;color:var(--gold);filter:drop-shadow(0 0 15px rgba(251,191,36,.6));pointer-events:none;z-index:200;animation:xpFloat .8s ease-out forwards}
+        
+        /* Results */
+        .results-card{background:linear-gradient(135deg,var(--card) 0%,var(--card2) 100%);border:1px solid var(--border);border-radius:20px;padding:30px 22px;text-align:center;animation:fadeIn .4s ease-out}
+        .results-icon{font-size:56px;margin-bottom:12px}
+        .results-title{font-size:24px;font-weight:800;margin-bottom:4px}
+        .results-subtitle{font-size:14px;color:var(--text2);margin-bottom:22px}
+        .results-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+        .results-stat{background:var(--bg2);border-radius:12px;padding:16px 10px}
+        .results-stat-value{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:800}
+        .results-stat-label{font-size:10px;color:var(--muted);text-transform:uppercase;margin-top:4px}
+        .results-xp{background:linear-gradient(135deg,rgba(251,191,36,.15),rgba(251,191,36,.05));border:1px solid rgba(251,191,36,.25);border-radius:10px;padding:12px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:10px}
+        .results-xp-text{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:700;color:var(--gold)}
+        .results-xp-bonus{font-size:11px;color:var(--text2)}
+        .results-actions{display:flex;gap:10px}
+        .results-actions .btn{flex:1}
+        
+        /* Stats */
+        .stats-section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:14px}
+        .stats-section-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+        .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+        .stats-card{background:var(--bg2);border-radius:10px;padding:14px;text-align:center}
+        .stats-card-value{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:800}
+        .stats-card-value.green{color:var(--accent)}
+        .stats-card-value.gold{color:var(--gold)}
+        .stats-card-value.purple{color:var(--purple)}
+        .stats-card-value.blue{color:var(--blue)}
+        .stats-card-label{font-size:9px;color:var(--muted);text-transform:uppercase;margin-top:4px}
+        .type-perf-item{margin-bottom:12px}
+        .type-perf-header{display:flex;justify-content:space-between;margin-bottom:5px}
+        .type-perf-name{font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px}
+        .type-perf-stats{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2)}
+        .type-perf-bar{height:6px;background:var(--bg);border-radius:3px;overflow:hidden}
+        .type-perf-fill{height:100%;border-radius:3px}
+        
+        /* Confetti */
+        .confetti-container{position:fixed;inset:0;pointer-events:none;z-index:1000;overflow:hidden}
+        .confetti{position:absolute;opacity:0;animation:confettiFall 2s ease-out forwards}
+        
+        @media(max-width:400px){
+            .container{padding:10px 12px 80px}
+            .question-text{font-size:22px}
+            .question-context{font-size:11px}
+            .answer-input{font-size:24px;padding:16px}
+            .daily-challenges{grid-template-columns:1fr}
+            .tables-grid{grid-template-columns:repeat(4,1fr)}
+            .results-stats{grid-template-columns:1fr}
+            .combo-display{right:10px}
+            .combo-mult{font-size:28px}
+            .settings-info{grid-template-columns:repeat(2,1fr)}
+        }
+        @supports(padding:env(safe-area-inset-top)){.container{padding-bottom:calc(80px + env(safe-area-inset-bottom))}}
+    </style>
+</head>
+<body>
+    <div class="ambient"><div class="orb orb1"></div><div class="orb orb2"></div></div>
+    <div id="app"></div>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script type="text/babel">
+const {useState, useEffect, useRef, useCallback} = React;
+
+// ==================== CONSTANTS ====================
+const ESS_TABLES = [5, 8, 11, 17, 35];
+const ALL_TABLES = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 17, 35];
+
+// Carrière étendue
+const CAREER = [
+    {id: 'debutant', name: 'Débutant', icon: '🎲', min: 0, color: '#6b7280'},
+    {id: 'junior', name: 'Croupier Junior', icon: '🃏', min: 500, color: '#10b981'},
+    {id: 'confirme', name: 'Croupier Confirmé', icon: '🎰', min: 1500, color: '#fbbf24'},
+    {id: 'senior', name: 'Croupier Senior', icon: '⭐', min: 3500, color: '#f97316'},
+    {id: 'inspecteur', name: 'Inspecteur', icon: '👔', min: 6000, color: '#a78bfa'},
+    {id: 'directeur', name: 'Directeur', icon: '👑', min: 10000, color: '#ef4444'}
+];
+
+const ROUL_PAYOUTS = [
+    {name: 'Plein', ratio: 35, ratioWithBet: 36},
+    {name: 'Cheval', ratio: 17, ratioWithBet: 18},
+    {name: 'Transversale', ratio: 11, ratioWithBet: 12},
+    {name: 'Carré', ratio: 8, ratioWithBet: 9},
+    {name: 'Sixain', ratio: 5, ratioWithBet: 6},
+    {name: 'Colonne', ratio: 2, ratioWithBet: 3},
+    {name: 'Simples', ratio: 1, ratioWithBet: 2}
+];
+
+const TRIPS_PAYOUTS = [
+    {hand: 'Quinte Flush Royale', ratio: 50},
+    {hand: 'Quinte Flush', ratio: 40},
+    {hand: 'Carré', ratio: 30},
+    {hand: 'Full', ratio: 8},
+    {hand: 'Couleur', ratio: 6},
+    {hand: 'Suite', ratio: 5},
+    {hand: 'Brelan', ratio: 3}
+];
+
+// 5 DIFFICULTÉS avec XP Bonus
+const DIFF_CONFIG = {
+    facile: {
+        time: 20,
+        bets: [25, 50, 100],
+        tableRange: [1, 10],
+        complexity: 1,
+        xpMult: 1,
+        label: 'Facile'
+    },
+    normal: {
+        time: 15,
+        bets: [10, 25, 50, 100, 150],
+        tableRange: [1, 12],
+        complexity: 1.5,
+        xpMult: 1.2,
+        label: 'Normal'
+    },
+    avance: {
+        time: 12,
+        bets: [10, 25, 50, 75, 100, 150],
+        tableRange: [1, 15],
+        complexity: 2,
+        xpMult: 1.5,
+        label: 'Avancé'
+    },
+    difficile: {
+        time: 10,
+        bets: [5, 10, 25, 50, 75, 100, 150, 200],
+        tableRange: [1, 20],
+        complexity: 2.5,
+        xpMult: 2,
+        label: 'Difficile'
+    },
+    expert: {
+        time: 8,
+        bets: [5, 10, 15, 25, 35, 50, 75, 100, 150, 200, 250],
+        tableRange: [1, 20],
+        complexity: 3,
+        xpMult: 2.5,
+        label: 'Expert'
+    }
+};
+
+const DAILY_CHALLS = [
+    {id: 'tables', name: 'Tables', desc: '10 calculs', icon: '✖️', target: 10, type: 'tables'},
+    {id: 'roulette', name: 'Roulette', desc: '8 calculs', icon: '🎡', target: 8, type: 'roulette'},
+    {id: 'blackjack', name: 'Blackjack', desc: '8 calculs', icon: '🃏', target: 8, type: 'blackjack'},
+    {id: 'poker', name: 'Poker', desc: '6 calculs', icon: '♠️', target: 6, type: 'poker'},
+    {id: 'chips', name: 'Jetons', desc: '6 calculs', icon: '🪙', target: 6, type: 'chips'},
+    {id: 'mixed', name: 'Mix', desc: '12 calculs', icon: '🎲', target: 12, type: 'mixed'}
+];
+
+// XP System
+const BASE_XP = 10;
+const XP_PER_LEVEL = 100;
+const getLevel = xp => Math.floor(xp / XP_PER_LEVEL) + 1;
+const getXpInLevel = xp => xp % XP_PER_LEVEL;
+
+// ==================== UTILITIES ====================
+const rnd = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const fmt = s => `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`;
+const today = () => new Date().toISOString().split('T')[0];
+const getCareer = xp => { for (let i = CAREER.length - 1; i >= 0; i--) if (xp >= CAREER[i].min) return CAREER[i]; return CAREER[0]; };
+const getNextCareer = xp => { for (let c of CAREER) if (xp < c.min) return c; return null; };
+
+const getTodayChalls = () => {
+    const d = today();
+    const n = d.split('-').reduce((a, b) => a + parseInt(b), 0);
+    const shuffled = [...DAILY_CHALLS];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = (n * (i + 1) * 31) % (i + 1);
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled.slice(0, 4);
+};
+
+// ==================== QUESTION GENERATORS ====================
+
+const genRoulette = (diff) => {
+    const cfg = DIFF_CONFIG[diff];
+    const bets = cfg.bets;
+    const complexity = cfg.complexity;
+    
+    if (complexity <= 1) {
+        const p = pick(ROUL_PAYOUTS);
+        const bet = pick(bets);
+        return { type: 'roulette', icon: '🎡', ctx: `Roulette - ${p.name}`, q: `${bet} × ${p.ratio}`, ans: bet * p.ratio };
+    }
+    
+    if (complexity <= 1.5) {
+        if (Math.random() > 0.5) {
+            const p = pick(ROUL_PAYOUTS);
+            const bet = pick(bets);
+            return { type: 'roulette', icon: '🎡', ctx: `Roulette - ${p.name}`, q: `${bet} × ${p.ratio}`, ans: bet * p.ratio };
+        }
+        const p1 = pick(ROUL_PAYOUTS), p2 = pick(ROUL_PAYOUTS.filter(x => x !== p1));
+        const b1 = pick(bets), b2 = pick(bets);
+        return { type: 'roulette', icon: '🎡', context: '2 paris gagnants:', q: `(${b1}×${p1.ratio}) + (${b2}×${p2.ratio})`, hint: `${p1.name} + ${p2.name}`, ans: (b1 * p1.ratio) + (b2 * p2.ratio) };
+    }
+    
+    if (complexity <= 2) {
+        const p1 = pick(ROUL_PAYOUTS), p2 = pick(ROUL_PAYOUTS.filter(x => x !== p1));
+        const b1 = pick(bets), b2 = pick(bets);
+        return { type: 'roulette', icon: '🎡', context: '2 paris gagnants:', q: `(${b1}×${p1.ratio}) + (${b2}×${p2.ratio})`, hint: `${p1.name} + ${p2.name}`, ans: (b1 * p1.ratio) + (b2 * p2.ratio) };
+    }
+    
+    if (complexity <= 2.5) {
+        const payouts = Array.from({length: 3}, () => ({ p: pick(ROUL_PAYOUTS), b: pick(bets) }));
+        const total = payouts.reduce((sum, x) => sum + (x.b * x.p.ratioWithBet), 0);
+        return { type: 'roulette', icon: '🎡', context: '3 paris (mises incluses):', q: payouts.map(x => `${x.b}×${x.p.ratioWithBet}`).join(' + '), ans: total };
+    }
+    
+    const payouts = Array.from({length: 4}, () => ({ p: pick(ROUL_PAYOUTS), b: pick(bets) }));
+    const total = payouts.reduce((sum, x) => sum + (x.b * x.p.ratioWithBet), 0);
+    return { type: 'roulette', icon: '🎡', context: 'Rush 4 paris (mises incluses):', q: payouts.map(x => `${x.b}×${x.p.ratioWithBet}`).join(' + '), ans: total };
+};
+
+const genBlackjack = (diff) => {
+    const cfg = DIFF_CONFIG[diff];
+    const bets = cfg.bets;
+    const complexity = cfg.complexity;
+    
+    if (complexity <= 1) {
+        if (Math.random() > 0.5) {
+            const cards = Array.from({length: rnd(2, 3)}, () => rnd(2, 11));
+            return { type: 'blackjack', icon: '🃏', ctx: 'BJ - Comptage', q: cards.join(' + '), hint: `${cards.length} cartes`, ans: cards.reduce((a, b) => a + b, 0) };
+        }
+        const bet = pick(bets);
+        return { type: 'blackjack', icon: '🃏', ctx: 'BJ - Paiement 1:1', q: `${bet} × 1`, ans: bet };
+    }
+    
+    if (complexity <= 1.5) {
+        const type = pick(['bj', 'ins', 'count']);
+        if (type === 'bj') { const bet = pick(bets); return { type: 'blackjack', icon: '🃏', ctx: 'Blackjack Naturel 3:2', q: `${bet} × 1.5`, ans: bet * 1.5 }; }
+        if (type === 'ins') { const bet = pick(bets.filter(b => b % 2 === 0)); return { type: 'blackjack', icon: '🃏', ctx: 'BJ - Assurance', q: `${bet} ÷ 2`, ans: bet / 2 }; }
+        const cards = Array.from({length: 4}, () => rnd(2, 11));
+        return { type: 'blackjack', icon: '🃏', ctx: 'BJ - Comptage', q: cards.join(' + '), hint: '4 cartes', ans: cards.reduce((a, b) => a + b, 0) };
+    }
+    
+    if (complexity <= 2) {
+        const type = pick(['bj', 'count5']);
+        if (type === 'bj') { const bet = pick(bets); return { type: 'blackjack', icon: '🃏', ctx: 'Blackjack Naturel 3:2', q: `${bet} × 1.5`, ans: bet * 1.5 }; }
+        const cards = Array.from({length: 5}, () => rnd(2, 10));
+        return { type: 'blackjack', icon: '🃏', ctx: 'BJ - Comptage', q: cards.join(' + '), hint: '5 cartes', ans: cards.reduce((a, b) => a + b, 0) };
+    }
+    
+    if (complexity <= 2.5) {
+        const b1 = pick(bets), b2 = pick(bets);
+        return { type: 'blackjack', icon: '🃏', context: '2 boxes gagnantes:', q: `(${b1}×1.5) + (${b2}×1)`, hint: 'BJ + Win', ans: (b1 * 1.5) + b2 };
+    }
+    
+    const b1 = pick(bets), b2 = pick(bets), b3 = pick(bets);
+    return { type: 'blackjack', icon: '🃏', context: '3 boxes:', q: `(${b1}×1.5) + ${b2} + (${b3}×2)`, hint: 'BJ + Win + Double', ans: (b1 * 1.5) + b2 + (b3 * 2) };
+};
+
+const genTexas = (diff) => {
+    const cfg = DIFF_CONFIG[diff];
+    const bets = cfg.bets;
+    const complexity = cfg.complexity;
+    
+    if (complexity <= 1) {
+        const amounts = Array.from({length: rnd(2, 3)}, () => pick(bets));
+        return { type: 'poker_texas', icon: '♠️', ctx: 'Texas - Pot', q: amounts.join(' + '), hint: `${amounts.length} joueurs`, ans: amounts.reduce((a, b) => a + b, 0) };
+    }
+    
+    if (complexity <= 1.5) {
+        if (Math.random() > 0.5) {
+            const bet = pick(bets), n = rnd(3, 5);
+            return { type: 'poker_texas', icon: '♠️', ctx: 'Texas - Mise collective', q: `${bet} × ${n}`, hint: `${n} joueurs call`, ans: bet * n };
+        }
+        const amounts = Array.from({length: rnd(3, 4)}, () => pick(bets));
+        return { type: 'poker_texas', icon: '♠️', ctx: 'Texas - Pot', q: amounts.join(' + '), ans: amounts.reduce((a, b) => a + b, 0) };
+    }
+    
+    if (complexity <= 2) {
+        const bet = pick(bets), n = rnd(4, 6);
+        return { type: 'poker_texas', icon: '♠️', ctx: 'Texas - Mise collective', q: `${bet} × ${n}`, hint: `${n} joueurs call`, ans: bet * n };
+    }
+    
+    if (complexity <= 2.5) {
+        const main = pick([200, 300, 400, 500]);
+        const sidePlayers = rnd(2, 3), sideAmount = pick(bets);
+        return { type: 'poker_texas', icon: '♠️', context: 'Main + Side pot:', q: `${main} + (${sideAmount}×${sidePlayers})`, hint: `Side: ${sidePlayers} joueurs`, ans: main + (sideAmount * sidePlayers) };
+    }
+    
+    const main = pick([400, 500, 600]);
+    const side1 = pick(bets) * rnd(2, 3), side2 = pick(bets) * rnd(2, 3);
+    return { type: 'poker_texas', icon: '♠️', context: 'Multi pots:', q: `${main} + ${side1} + ${side2}`, hint: 'Main + 2 sides', ans: main + side1 + side2 };
+};
+
+const genUltimate = (diff) => {
+    const cfg = DIFF_CONFIG[diff];
+    const bets = cfg.bets;
+    const complexity = cfg.complexity;
+    
+    if (complexity <= 1) {
+        const ante = pick(bets);
+        return { type: 'poker_ultimate', icon: '👑', ctx: 'Ultimate - Ante+Blind', q: `${ante} × 2`, ans: ante * 2 };
+    }
+    
+    if (complexity <= 2) {
+        const ante = pick(bets), mult = pick([2, 3, 4]);
+        return { type: 'poker_ultimate', icon: '👑', ctx: `Ultimate - Play ${mult}x`, q: `${ante} × ${mult}`, ans: ante * mult };
+    }
+    
+    if (complexity <= 2.5) {
+        if (Math.random() > 0.5) {
+            const ante = pick(bets), play = pick([2, 3, 4]);
+            return { type: 'poker_ultimate', icon: '👑', context: 'Total engagé:', q: `${ante} + ${ante} + (${ante}×${play})`, hint: 'Ante + Blind + Play', ans: ante + ante + (ante * play) };
+        }
+        const bet = pick(bets), trip = pick(TRIPS_PAYOUTS);
+        return { type: 'poker_ultimate', icon: '👑', ctx: `Trips - ${trip.hand}`, q: `${bet} × ${trip.ratio}`, ans: bet * trip.ratio };
+    }
+    
+    const ante = pick(bets), trips = pick(bets.filter(b => b <= 50)), trip = pick(TRIPS_PAYOUTS.slice(3));
+    const playMult = pick([2, 3, 4]);
+    return { type: 'poker_ultimate', icon: '👑', context: 'Gains complets:', q: `${ante} + (${ante}×${playMult}) + (${trips}×${trip.ratio})`, hint: `Blind + Play + ${trip.hand}`, ans: ante + (ante * playMult) + (trips * trip.ratio) };
+};
+
+const genChips = (diff) => {
+    const cfg = DIFF_CONFIG[diff];
+    const bets = cfg.bets;
+    const complexity = cfg.complexity;
+    
+    if (complexity <= 1) {
+        const val = pick([5, 10, 25, 50]), n = rnd(4, 10);
+        return { type: 'chips', icon: '🪙', ctx: 'Change - Conversion', q: `${n} × ${val}`, ans: n * val };
+    }
+    
+    if (complexity <= 1.5) {
+        const c1 = {v: pick([5, 10, 25]), n: rnd(2, 5)}, c2 = {v: pick([50, 100]), n: rnd(1, 3)};
+        return { type: 'chips', icon: '🪙', ctx: 'Change - Comptage', q: `(${c1.n}×${c1.v}) + (${c2.n}×${c2.v})`, ans: (c1.n * c1.v) + (c2.n * c2.v) };
+    }
+    
+    if (complexity <= 2) {
+        const c1 = {v: 5, n: rnd(2, 6)}, c2 = {v: 25, n: rnd(2, 4)}, c3 = {v: 100, n: rnd(1, 2)};
+        return { type: 'chips', icon: '🪙', ctx: 'Change - Comptage', q: `(${c1.n}×${c1.v}) + (${c2.n}×${c2.v}) + (${c3.n}×${c3.v})`, ans: (c1.n * c1.v) + (c2.n * c2.v) + (c3.n * c3.v) };
+    }
+    
+    if (complexity <= 2.5) {
+        if (Math.random() > 0.5) {
+            const amount = pick([200, 250, 300, 400, 500]), val = pick([25, 50]);
+            return { type: 'chips', icon: '🪙', ctx: 'Change - Échange', q: `${amount} ÷ ${val}`, hint: 'Combien de jetons?', ans: amount / val };
+        }
+        const c1 = {v: 5, n: rnd(3, 8)}, c2 = {v: 25, n: rnd(2, 5)}, c3 = {v: 100, n: rnd(1, 3)};
+        return { type: 'chips', icon: '🪙', ctx: 'Change - Comptage', q: `(${c1.n}×${c1.v}) + (${c2.n}×${c2.v}) + (${c3.n}×${c3.v})`, ans: (c1.n * c1.v) + (c2.n * c2.v) + (c3.n * c3.v) };
+    }
+    
+    if (Math.random() > 0.5) {
+        const given = pick([300, 400, 500]), spent = pick(bets.filter(b => b < given));
+        return { type: 'chips', icon: '🪙', ctx: 'Change - Rendu', q: `${given} - ${spent}`, hint: 'Rendu au client', ans: given - spent };
+    }
+    const c1 = {v: 1, n: rnd(5, 15)}, c2 = {v: 5, n: rnd(5, 12)}, c3 = {v: 25, n: rnd(3, 8)}, c4 = {v: 100, n: rnd(1, 4)};
+    return { type: 'chips', icon: '🪙', context: 'Stack complet:', q: `${c4.n}×100 + ${c3.n}×25 + ${c2.n}×5 + ${c1.n}×1`, ans: (c1.n * c1.v) + (c2.n * c2.v) + (c3.n * c3.v) + (c4.n * c4.v) };
+};
+
+const genTables = (diff, selectedTables) => {
+    const cfg = DIFF_CONFIG[diff];
+    const tables = selectedTables.length ? selectedTables : ESS_TABLES;
+    const [minMult, maxMult] = cfg.tableRange;
+    const complexity = cfg.complexity;
+    
+    if (complexity <= 1.5) {
+        const t = pick(tables), m = rnd(minMult, maxMult);
+        return { type: 'tables', icon: '✖️', ctx: 'Multiplication', q: `${t} × ${m}`, ans: t * m, table: t };
+    }
+    
+    if (complexity <= 2.5) {
+        const t1 = pick(tables), t2 = pick(tables);
+        const m1 = rnd(minMult, maxMult), m2 = rnd(minMult, Math.min(10, maxMult));
+        return { type: 'tables', icon: '✖️', ctx: 'Double calcul', q: `(${t1}×${m1}) + (${t2}×${m2})`, ans: (t1 * m1) + (t2 * m2), table: t1 };
+    }
+    
+    const t1 = pick(tables), t2 = pick(tables), t3 = pick(tables);
+    const m1 = rnd(2, 10), m2 = rnd(2, 8), m3 = rnd(2, 6);
+    return { type: 'tables', icon: '✖️', ctx: 'Triple calcul', q: `(${t1}×${m1}) + (${t2}×${m2}) + (${t3}×${m3})`, ans: (t1 * m1) + (t2 * m2) + (t3 * m3), table: t1 };
+};
+
+const genFree = (diff) => {
+    const r = Math.random();
+    if (r < 0.30) return genTables(diff, ESS_TABLES);
+    if (r < 0.50) return genRoulette(diff);
+    if (r < 0.65) return genBlackjack(diff);
+    if (r < 0.80) return pick([genTexas, genUltimate])(diff);
+    return genChips(diff);
+};
+
+// ==================== STORAGE ====================
+const loadStats = () => {
+    try {
+        const s = localStorage.getItem('croupier_v43');
+        if (s) return JSON.parse(s);
+    } catch (e) {}
+    return { total: 0, correct: 0, best: 0, xp: 0, byType: {}, byTable: {}, daily: {}, challs: {}, errors: [], streak: 0, last: null };
+};
+
+const saveStats = s => { try { localStorage.setItem('croupier_v43', JSON.stringify(s)); } catch (e) {} };
+
+// ==================== COMPONENTS ====================
+
+const Confetti = ({active}) => {
+    const [p, setP] = useState([]);
+    useEffect(() => {
+        if (active) {
+            const colors = ['#10b981', '#fbbf24', '#a78bfa', '#f87171', '#60a5fa'];
+            setP(Array.from({length: 40}, (_, i) => ({ id: i, x: Math.random() * 100, c: pick(colors), d: Math.random() * 0.4, s: 6 + Math.random() * 6 })));
+            setTimeout(() => setP([]), 2200);
+        }
+    }, [active]);
+    if (!p.length) return null;
+    return <div className="confetti-container">{p.map(x => <div key={x.id} className="confetti" style={{ left: `${x.x}%`, width: x.s, height: x.s, background: x.c, borderRadius: Math.random() > 0.5 ? '50%' : '2px', animationDelay: `${x.d}s` }}/>)}</div>;
+};
+
+const Header = ({onHome, stats, onCareer}) => {
+    const c = getCareer(stats.xp);
+    const level = getLevel(stats.xp);
+    return (
+        <header className="header">
+            <div className="logo" onClick={onHome}>
+                <div className="logo-icon">CM</div>
+                <div className="logo-text">Croupier<span>Mental</span></div>
+            </div>
+            <div className="header-right">
+                {stats.best >= 5 && <div className="streak-badge">🔥{stats.best}</div>}
+                <div className="level-badge" onClick={onCareer}>
+                    <div className="level-num">Nv.{level}</div>
+                </div>
+                <div className="career-badge" onClick={onCareer}>
+                    <div className={`career-icon ${c.id}`}>{c.icon}</div>
+                    <div className="career-info">
+                        <div className="career-title">{c.name}</div>
+                        <div className="career-xp">{stats.xp} XP</div>
+                    </div>
+                </div>
+            </div>
+        </header>
+    );
+};
+
+const CareerCard = ({stats}) => {
+    const c = getCareer(stats.xp);
+    const n = getNextCareer(stats.xp);
+    const p = n ? ((stats.xp - c.min) / (n.min - c.min)) * 100 : 100;
+    const level = getLevel(stats.xp);
+    const xpInLvl = getXpInLevel(stats.xp);
+    const acc = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+    
+    return (
+        <div className="career-card fadeIn">
+            <div className="career-header">
+                <div className={`career-header-icon career-icon ${c.id}`}>{c.icon}</div>
+                <div className="career-header-info">
+                    <h3>{c.name} <span className="lvl">Nv.{level}</span></h3>
+                    <p>{stats.correct} réponses correctes • {acc}% précision</p>
+                </div>
+            </div>
+            
+            <div className="career-stats">
+                <div className="career-stat">
+                    <div className="career-stat-value xp">{stats.xp}</div>
+                    <div className="career-stat-label">XP Total</div>
+                </div>
+                <div className="career-stat">
+                    <div className="career-stat-value">{xpInLvl}/{XP_PER_LEVEL}</div>
+                    <div className="career-stat-label">XP Niveau</div>
+                </div>
+                <div className="career-stat">
+                    <div className="career-stat-value acc">{acc}%</div>
+                    <div className="career-stat-label">Précision</div>
+                </div>
+            </div>
+            
+            {n && (
+                <>
+                    <div className="career-progress-bar">
+                        <div className="career-progress-fill" style={{ width: `${p}%`, background: `linear-gradient(90deg, ${c.color}, ${n.color})` }}/>
+                    </div>
+                    <div className="career-progress-text">
+                        <span>{c.name}</span>
+                        <span><strong>{n.min - stats.xp}</strong> XP pour {n.name}</span>
+                    </div>
+                    <div className="career-next">
+                        <span className="career-next-icon">{n.icon}</span>
+                        <span>Prochain grade: <strong>{n.name}</strong></span>
+                    </div>
+                </>
+            )}
+            {!n && (
+                <div className="career-next" style={{background: 'rgba(251,191,36,.12)'}}>
+                    <span className="career-next-icon">🏆</span>
+                    <span style={{color: 'var(--gold)'}}>Grade maximum atteint!</span>
+                </div>
+            )}
+            
+            <div className="xp-bonus-info">
+                <div className="xp-bonus">Facile: <strong>×1</strong></div>
+                <div className="xp-bonus">Normal: <strong>×1.2</strong></div>
+                <div className="xp-bonus">Avancé: <strong>×1.5</strong></div>
+                <div className="xp-bonus">Difficile: <strong>×2</strong></div>
+                <div className="xp-bonus">Expert: <strong>×2.5</strong></div>
+            </div>
+        </div>
+    );
+};
+
+const DailySection = ({stats, onStart}) => {
+    const chs = getTodayChalls();
+    const td = today();
+    const prog = stats.challs[td] || {};
+    
+    return (
+        <div className="daily-section fadeIn">
+            <div className="daily-header">
+                <div className="daily-title">
+                    <span className="daily-title-icon">🎯</span>
+                    <span>Défis du jour</span>
+                </div>
+                <div className="daily-streak">🔥 <strong>{stats.streak || 0}</strong> jours</div>
+            </div>
+            <div className="daily-challenges">
+                {chs.map(ch => {
+                    const pr = prog[ch.id] || 0;
+                    const done = pr >= ch.target;
+                    return (
+                        <div key={ch.id} className={`daily-challenge ${done ? 'completed' : ''}`} onClick={() => !done && onStart(ch)}>
+                            <div className="challenge-icon">{ch.icon}</div>
+                            <div className="challenge-name">{ch.name}</div>
+                            <div className="challenge-desc">{ch.desc}</div>
+                            <div className="challenge-progress">
+                                <div className="challenge-progress-fill" style={{width: `${Math.min((pr/ch.target)*100, 100)}%`}}/>
+                            </div>
+                            <div className="challenge-progress-text">{pr}/{ch.target}</div>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+
+const MainMenu = ({onMode, stats}) => (
+    <div className="fadeIn">
+        <CareerCard stats={stats}/>
+        <DailySection stats={stats} onStart={c => onMode('challenge', c)}/>
+        
+        <div className="menu-title">Entraînement</div>
+        <div className="menu-grid">
+            <div className="menu-card" onClick={() => onMode('libre')}><div className="menu-card-icon">🎲</div><div className="menu-card-title">Mode Libre</div><div className="menu-card-desc">Sans pression, à ton rythme</div></div>
+            <div className="menu-card" onClick={() => onMode('chrono')}><div className="menu-card-icon">⏱️</div><div className="menu-card-title">Chrono</div><div className="menu-card-desc">60 secondes pour scorer</div></div>
+            <div className="menu-card hl" onClick={() => onMode('tables')}><div className="menu-card-icon">🎰</div><div className="menu-card-title">Tables de Jeu</div><div className="menu-card-desc">BJ, Roulette, Poker</div></div>
+            <div className="menu-card" onClick={() => onMode('chips')}><div className="menu-card-icon">🪙</div><div className="menu-card-title">Change</div><div className="menu-card-desc">Jetons & conversions</div></div>
+        </div>
+        
+        <div className="menu-title">Fondamentaux</div>
+        <div className="menu-grid">
+            <div className="menu-card" onClick={() => onMode('multi')}><div className="menu-card-icon">✖️</div><div className="menu-card-title">Multiplications</div><div className="menu-card-desc">Tables ×1 à ×20</div></div>
+            {stats.errors?.length > 0 && (
+                <div className="menu-card" onClick={() => onMode('errors')}><div className="menu-card-badge">{stats.errors.length}</div><div className="menu-card-icon">🔄</div><div className="menu-card-title">Réviser</div><div className="menu-card-desc">Tes erreurs passées</div></div>
+            )}
+        </div>
+        
+        <div className="menu-title">Suivi</div>
+        <div className="menu-grid">
+            <div className="menu-card full" onClick={() => onMode('stats')}><div className="menu-card-icon">📊</div><div className="menu-card-title">Statistiques Détaillées</div><div className="menu-card-desc">Progression, performances, historique</div></div>
+        </div>
+    </div>
+);
+
+const TableSelect = ({onSel, onBack}) => (
+    <div className="fadeIn">
+        <button className="btn-back" onClick={onBack}>← Retour</button>
+        <h2 style={{fontSize: 18, fontWeight: 800, marginBottom: 16}}>Tables de Jeu</h2>
+        <div className="game-modes">
+            <div className="game-mode-btn" onClick={() => onSel('blackjack')}><div className="icon">🃏</div><div className="label">Blackjack</div><div className="sub">Comptage & Paiements</div></div>
+            <div className="game-mode-btn" onClick={() => onSel('roulette')}><div className="icon">🎡</div><div className="label">Roulette</div><div className="sub">Multi-paris</div></div>
+            <div className="game-mode-btn" onClick={() => onSel('poker_texas')}><div className="icon">♠️</div><div className="label">Texas</div><div className="sub">Pots & Sides</div></div>
+            <div className="game-mode-btn" onClick={() => onSel('poker_ultimate')}><div className="icon">👑</div><div className="label">Ultimate</div><div className="sub">Ante, Play, Trips</div></div>
+        </div>
+    </div>
+);
+
+const MultiSelect = ({sel, onTog, onStart, onBack}) => (
+    <div className="fadeIn">
+        <button className="btn-back" onClick={onBack}>← Retour</button>
+        <h2 style={{fontSize: 18, fontWeight: 800, marginBottom: 4}}>Multiplications</h2>
+        <p style={{fontSize: 12, color: 'var(--text2)', marginBottom: 16}}>×1 à ×20 selon la difficulté</p>
+        
+        <div className="tables-section">
+            <div className="tables-title">Essentielles <span className="badge">CROUPIER</span></div>
+            <div className="tables-grid" style={{gridTemplateColumns: 'repeat(5, 1fr)'}}>
+                {ESS_TABLES.map(n => <div key={n} className={`table-btn ess ${sel.includes(n) ? 'active' : ''}`} onClick={() => onTog(n)}><div className="num">{n}</div></div>)}
+            </div>
+        </div>
+        
+        <div className="tables-section">
+            <div className="tables-title">Autres</div>
+            <div className="tables-grid">
+                {ALL_TABLES.filter(n => !ESS_TABLES.includes(n)).map(n => <div key={n} className={`table-btn ${sel.includes(n) ? 'active' : ''}`} onClick={() => onTog(n)}><div className="num">{n}</div></div>)}
+            </div>
+        </div>
+        
+        <button className="btn btn-primary btn-large" onClick={onStart} disabled={!sel.length} style={{marginTop: 10}}>Commencer</button>
+    </div>
+);
+
+const DiffSelect = ({d, setD, onStart, onBack}) => {
+    const cfg = DIFF_CONFIG[d];
+    return (
+        <div className="fadeIn">
+            <button className="btn-back" onClick={onBack}>← Retour</button>
+            <h2 style={{fontSize: 18, fontWeight: 800, marginBottom: 16}}>Difficulté</h2>
+            
+            <div className="settings-panel">
+                <div className="settings-title">Niveau</div>
+                <div className="settings-options">
+                    {['facile', 'normal', 'avance', 'difficile', 'expert'].map(x => (
+                        <button key={x} className={`settings-opt ${d === x ? 'active' : ''}`} onClick={() => setD(x)}>
+                            {DIFF_CONFIG[x].label}
+                        </button>
+                    ))}
+                </div>
+                <div className="settings-info">
+                    <div className="settings-info-item">⏱️ Temps<strong>{cfg.time}s</strong></div>
+                    <div className="settings-info-item">📊 Complexité<strong>{cfg.complexity}</strong></div>
+                    <div className="settings-info-item">✖️ Tables<strong>×{cfg.tableRange[0]}-{cfg.tableRange[1]}</strong></div>
+                    <div className="settings-info-item">⭐ XP Bonus<strong className="gold">×{cfg.xpMult}</strong></div>
+                </div>
+            </div>
+            
+            <button className="btn btn-primary btn-large" onClick={onStart}>Lancer</button>
+        </div>
+    );
+};
+
+const Game = ({mode, diff, tables, ch, onBack, update, stats}) => {
+    const [q, setQ] = useState(null);
+    const [ans, setAns] = useState('');
+    const [fb, setFb] = useState(null);
+    const [sc, setSc] = useState({ok: 0, err: 0});
+    const [tl, setTl] = useState(mode === 'chrono' ? 60 : null);
+    const [qt, setQt] = useState(DIFF_CONFIG[diff].time);
+    const [str, setStr] = useState(0);
+    const [combo, setCombo] = useState(0);
+    const [done, setDone] = useState(false);
+    const [conf, setConf] = useState(false);
+    const [xp, setXp] = useState(0);
+    const [showXp, setShowXp] = useState(false);
+    const [lastXp, setLastXp] = useState(0);
+    const inp = useRef(null);
+    
+    const cfg = DIFF_CONFIG[diff];
+    
+    const genQ = useCallback(() => {
+        let nq;
+        if (mode === 'errors' && stats.errors?.length) {
+            const e = stats.errors[sc.ok % stats.errors.length];
+            nq = {...e, icon: '🔄', ctx: 'Révision', isErr: true};
+        } else if (mode === 'challenge' && ch) {
+            switch (ch.type) {
+                case 'tables': nq = genTables(diff, ESS_TABLES); break;
+                case 'roulette': nq = genRoulette(diff); break;
+                case 'blackjack': nq = genBlackjack(diff); break;
+                case 'poker': nq = pick([genTexas, genUltimate])(diff); break;
+                case 'chips': nq = genChips(diff); break;
+                default: nq = genFree(diff);
+            }
+        } else {
+            switch (mode) {
+                case 'blackjack': nq = genBlackjack(diff); break;
+                case 'roulette': nq = genRoulette(diff); break;
+                case 'poker_texas': nq = genTexas(diff); break;
+                case 'poker_ultimate': nq = genUltimate(diff); break;
+                case 'chips': nq = genChips(diff); break;
+                case 'multi': nq = genTables(diff, tables); break;
+                default: nq = genFree(diff);
+            }
+        }
+        setQ(nq); setAns(''); setFb(null); setQt(DIFF_CONFIG[diff].time);
+        setTimeout(() => inp.current?.focus(), 50);
+    }, [mode, diff, tables, ch, stats.errors, sc.ok]);
+    
+    useEffect(() => { genQ(); }, []);
+    useEffect(() => { if (mode === 'chrono' && tl > 0 && !done) { const t = setTimeout(() => setTl(x => x - 1), 1000); return () => clearTimeout(t); } if (mode === 'chrono' && tl === 0) setDone(true); }, [tl, mode, done]);
+    useEffect(() => { if (!['libre', 'errors'].includes(mode) && qt > 0 && !fb && !done && q) { const t = setTimeout(() => setQt(x => x - 1), 1000); return () => clearTimeout(t); } if (qt === 0 && !fb && q) handleTimeout(); }, [qt, fb, done, mode, q]);
+    
+    const handleTimeout = () => { setFb({ok: false, a: q.ans}); setSc(s => ({...s, err: s.err + 1})); setStr(0); setCombo(0); update(false, q, null, ch, diff); setTimeout(genQ, 1600); };
+    
+    const submit = e => {
+        e.preventDefault();
+        if (!ans || fb || !q) return;
+        const n = parseFloat(ans), ok = n === q.ans;
+        setFb({ok, a: q.ans});
+        
+        if (ok) {
+            const ns = str + 1, nc = combo + 1;
+            setSc(s => ({...s, ok: s.ok + 1})); setStr(ns); setCombo(nc);
+            const comboMult = Math.min(Math.floor(nc / 3) + 1, 4);
+            const earnedXp = Math.round(BASE_XP * cfg.xpMult * comboMult);
+            setXp(x => x + earnedXp); setLastXp(earnedXp); setShowXp(true);
+            setTimeout(() => setShowXp(false), 600);
+            if (ns % 5 === 0) { setConf(true); setTimeout(() => setConf(false), 100); }
+        } else { setSc(s => ({...s, err: s.err + 1})); setStr(0); setCombo(0); }
+        
+        update(ok, q, ans, ch, diff);
+        setTimeout(genQ, ok ? 500 : 1400);
+    };
+    
+    const pct = (qt / cfg.time) * 100;
+    const cls = pct < 25 ? 'danger' : pct < 50 ? 'warn' : '';
+    const cm = Math.min(Math.floor(combo / 3) + 1, 4);
+    
+    if (done) {
+        const t = sc.ok + sc.err, acc = t ? Math.round((sc.ok / t) * 100) : 0;
+        let ic = '😕', msg = 'Continue!';
+        if (acc >= 90) { ic = '🏆'; msg = 'Exceptionnel!'; }
+        else if (acc >= 80) { ic = '🔥'; msg = 'Excellent!'; }
+        else if (acc >= 70) { ic = '👍'; msg = 'Bien joué!'; }
+        else if (acc >= 60) { ic = '💪'; msg = 'Tu progresses!'; }
+        
+        return (
+            <div className="container">
+                <Confetti active={acc >= 80}/>
+                <div className="results-card">
+                    <div className="results-icon">{ic}</div>
+                    <div className="results-title">Session terminée</div>
+                    <div className="results-subtitle">{msg}</div>
+                    <div className="results-stats">
+                        <div className="results-stat"><div className="results-stat-value" style={{color: 'var(--accent)'}}>{sc.ok}</div><div className="results-stat-label">Correct</div></div>
+                        <div className="results-stat"><div className="results-stat-value" style={{color: 'var(--error)'}}>{sc.err}</div><div className="results-stat-label">Erreurs</div></div>
+                        <div className="results-stat"><div className="results-stat-value" style={{color: 'var(--gold)'}}>{acc}%</div><div className="results-stat-label">Précision</div></div>
+                    </div>
+                    <div className="results-xp">
+                        <span>⭐</span>
+                        <span className="results-xp-text">+{xp} XP</span>
+                        <span className="results-xp-bonus">({cfg.label} ×{cfg.xpMult})</span>
+                    </div>
+                    <div className="results-actions">
+                        <button className="btn btn-secondary" onClick={onBack}>Menu</button>
+                        <button className="btn btn-primary" onClick={() => { setDone(false); setSc({ok: 0, err: 0}); setTl(60); setStr(0); setCombo(0); setXp(0); genQ(); }}>Rejouer</button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+    
+    return (
+        <div className="game-container">
+            <Confetti active={conf}/>
+            {showXp && <div className="xp-popup">+{lastXp} XP</div>}
+            {combo >= 3 && <div className="combo-display"><div className="combo-mult">×{cm}</div><div className="combo-label">Combo</div></div>}
+            
+            <div className="game-header">
+                <button className="btn-back" onClick={onBack} style={{marginBottom: 0}}>← Quitter</button>
+                <div className="game-info">
+                    {mode === 'chrono' && <div className="game-stat"><div className="game-stat-value gold">{fmt(tl)}</div><div className="game-stat-label">Temps</div></div>}
+                    <div className="game-stat"><div className="game-stat-value green">{sc.ok}</div><div className="game-stat-label">OK</div></div>
+                    <div className="game-stat"><div className="game-stat-value red">{sc.err}</div><div className="game-stat-label">Err</div></div>
+                    {str >= 3 && <div className="game-stat hl"><div className="game-stat-value gold">🔥{str}</div><div className="game-stat-label">Série</div></div>}
+                </div>
+            </div>
+            
+            {!['libre', 'errors'].includes(mode) && <div className="timer-bar-bg"><div className={`timer-bar ${cls}`} style={{width: `${pct}%`}}/></div>}
+            
+            {q && (
+                <>
+                    <div className={`question-card ${fb ? (fb.ok ? 'correct' : 'incorrect') : ''}`}>
+                        <div className="question-badge"><span className="question-badge-icon">{q.icon}</span><span>{q.ctx}</span></div>
+                        {q.context && <div className="question-context">{q.context}</div>}
+                        <div className="question-text">{q.q}</div>
+                        {q.hint && <div className="question-hint">{q.hint}</div>}
+                    </div>
+                    <form onSubmit={submit}>
+                        <input ref={inp} type="number" step="any" inputMode="decimal" className={`answer-input ${fb ? (fb.ok ? 'correct' : 'incorrect') : ''}`} value={ans} onChange={e => setAns(e.target.value)} placeholder="?" disabled={!!fb} autoFocus/>
+                        {fb && <div className={`feedback ${fb.ok ? 'correct' : 'incorrect'}`}>{fb.ok ? '✓ Correct!' : <>✗ Réponse: <span className="ans">{fb.a}</span></>}</div>}
+                        {!fb && <button type="submit" className="btn btn-primary btn-large">Valider</button>}
+                    </form>
+                </>
+            )}
+            
+            {['libre', 'errors', 'challenge'].includes(mode) && <button className="btn btn-secondary btn-large" style={{marginTop: 10}} onClick={() => setDone(true)}>Terminer</button>}
+        </div>
+    );
+};
+
+const StatsPage = ({stats, onBack}) => {
+    const acc = stats.total ? Math.round((stats.correct / stats.total) * 100) : 0;
+    const level = getLevel(stats.xp);
+    const icons = { roulette: '🎡', blackjack: '🃏', poker_texas: '♠️', poker_ultimate: '👑', chips: '🪙', tables: '✖️' };
+    
+    return (
+        <div className="fadeIn">
+            <button className="btn-back" onClick={onBack}>← Retour</button>
+            <CareerCard stats={stats}/>
+            
+            <div className="stats-section">
+                <div className="stats-section-title">📈 Vue d'ensemble</div>
+                <div className="stats-grid">
+                    <div className="stats-card"><div className="stats-card-value">{stats.total}</div><div className="stats-card-label">Questions</div></div>
+                    <div className="stats-card"><div className="stats-card-value green">{acc}%</div><div className="stats-card-label">Précision</div></div>
+                    <div className="stats-card"><div className="stats-card-value gold">{stats.best}</div><div className="stats-card-label">Meilleure série</div></div>
+                    <div className="stats-card"><div className="stats-card-value blue">{level}</div><div className="stats-card-label">Niveau</div></div>
+                </div>
+            </div>
+            
+            <div className="stats-section">
+                <div className="stats-section-title">🎯 Performance par type</div>
+                {Object.entries(stats.byType || {}).map(([t, d]) => {
+                    const a = d.total ? Math.round((d.correct / d.total) * 100) : 0;
+                    const c = a >= 80 ? 'var(--accent)' : a >= 60 ? 'var(--gold)' : 'var(--error)';
+                    return (
+                        <div key={t} className="type-perf-item">
+                            <div className="type-perf-header"><span className="type-perf-name">{icons[t] || '📊'} {t.replace('_', ' ')}</span><span className="type-perf-stats">{a}% ({d.correct}/{d.total})</span></div>
+                            <div className="type-perf-bar"><div className="type-perf-fill" style={{width: `${a}%`, background: c}}/></div>
+                        </div>
+                    );
+                })}
+            </div>
+            
+            <button className="btn btn-secondary btn-large" onClick={() => { if (confirm('Réinitialiser toutes les stats?')) { localStorage.removeItem('croupier_v43'); location.reload(); } }}>Réinitialiser</button>
+        </div>
+    );
+};
+
+// ==================== APP ====================
+const App = () => {
+    const [view, setView] = useState('menu');
+    const [mode, setMode] = useState(null);
+    const [diff, setDiff] = useState('normal');
+    const [tables, setTables] = useState([...ESS_TABLES]);
+    const [ch, setCh] = useState(null);
+    const [stats, setStats] = useState(loadStats);
+    
+    useEffect(() => { saveStats(stats); }, [stats]);
+    useEffect(() => { const td = today(); if (stats.last && stats.last !== td) { const y = new Date(); y.setDate(y.getDate() - 1); if (stats.last !== y.toISOString().split('T')[0]) setStats(s => ({...s, streak: 0})); } }, []);
+    
+    const update = useCallback((ok, q, a, c, difficulty) => {
+        const cfg = DIFF_CONFIG[difficulty] || DIFF_CONFIG.normal;
+        setStats(p => {
+            const td = today(), type = q.type;
+            const td2 = p.byType[type] || {correct: 0, total: 0};
+            let bt = {...p.byTable};
+            if (q.table) { const x = bt[q.table] || {correct: 0, total: 0}; bt[q.table] = {correct: x.correct + (ok ? 1 : 0), total: x.total + 1}; }
+            let errs = [...(p.errors || [])];
+            if (!ok && a !== null && !errs.some(e => e.q === q.q)) errs.push({q: q.q, ans: q.ans, type: q.type, ctx: q.ctx || q.context});
+            if (errs.length > 50) errs = errs.slice(-50);
+            if (ok && q.isErr) errs = errs.filter(e => e.q !== q.q);
+            let chs = {...p.challs}; if (!chs[td]) chs[td] = {}; if (c && ok) chs[td][c.id] = (chs[td][c.id] || 0) + 1;
+            const ns = ok ? (p.cur || 0) + 1 : 0;
+            const comboMult = Math.min(Math.floor(ns / 3) + 1, 4);
+            const xpG = ok ? Math.round(BASE_XP * cfg.xpMult * comboMult) : 0;
+            const isNew = p.last !== td;
+            return { ...p, total: p.total + 1, correct: p.correct + (ok ? 1 : 0), cur: ns, best: Math.max(p.best || 0, ns), xp: p.xp + xpG, byType: {...p.byType, [type]: {correct: td2.correct + (ok ? 1 : 0), total: td2.total + 1}}, byTable: bt, daily: {...p.daily, [td]: (p.daily[td] || 0) + 1}, challs: chs, errors: errs, streak: isNew ? (p.streak || 0) + 1 : p.streak, last: td };
+        });
+    }, []);
+    
+    const handleMode = (m, data = null) => { setMode(m); setCh(null); if (m === 'stats') setView('stats'); else if (m === 'tables') setView('tableSelect'); else if (m === 'multi') setView('multiSelect'); else if (m === 'challenge') { setCh(data); setView('game'); } else if (m === 'errors') setView('game'); else setView('diff'); };
+    const goHome = () => { setView('menu'); setMode(null); setCh(null); };
+    const togTable = n => setTables(p => p.includes(n) ? p.filter(x => x !== n) : [...p, n]);
+    
+    return (
+        <div className="container">
+            <Header onHome={goHome} stats={stats} onCareer={() => setView('stats')}/>
+            {view === 'menu' && <MainMenu onMode={handleMode} stats={stats}/>}
+            {view === 'tableSelect' && <TableSelect onSel={g => { setMode(g); setView('diff'); }} onBack={goHome}/>}
+            {view === 'multiSelect' && <MultiSelect sel={tables} onTog={togTable} onStart={() => setView('game')} onBack={goHome}/>}
+            {view === 'diff' && <DiffSelect d={diff} setD={setDiff} onStart={() => setView('game')} onBack={goHome}/>}
+            {view === 'game' && <Game mode={mode} diff={diff} tables={tables} ch={ch} onBack={goHome} update={update} stats={stats}/>}
+            {view === 'stats' && <StatsPage stats={stats} onBack={goHome}/>}
+        </div>
+    );
+};
+
+ReactDOM.createRoot(document.getElementById('app')).render(<App/>);
+    </script>
+</body>
+</html>

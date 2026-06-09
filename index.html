@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#07090c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>CroupierMental v5 — Calcul mental pour croupiers</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🎰</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#07090c;--bg2:#0d1014;--card:#12161c;--card2:#181d25;
+  --accent:#10b981;--accent2:#059669;--accent-soft:rgba(16,185,129,.12);
+  --gold:#f5c451;--gold2:#d9a833;--purple:#a78bfa;--blue:#5eaaf7;--pink:#f472b6;--red:#f06464;
+  --text:#f4f6f8;--text2:#9aa3af;--muted:#5b6470;--border:#222934;--border2:#323b48;
+  --rad:18px;--rad-sm:12px;
+  --c-roulette:#e75c5c;--c-blackjack:#10b981;--c-baccarat:#f5a623;--c-texas:#5eaaf7;
+  --c-ultimate:#a78bfa;--c-chips:#f5c451;--c-tables:#34d399;--c-mix:#f472b6;
+}
+html,body{font-family:'DM Sans','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;overflow-x:hidden;line-height:1.5;-webkit-font-smoothing:antialiased}
+.mono{font-family:'JetBrains Mono','SF Mono',Consolas,monospace}
+button{font-family:inherit;color:inherit}
+/* ---------- ambiance ---------- */
+.bg-felt{position:fixed;inset:0;z-index:0;pointer-events:none;background:
+  radial-gradient(900px 500px at 50% -10%,rgba(16,185,129,.10),transparent 65%),
+  radial-gradient(700px 420px at 110% 110%,rgba(245,196,81,.06),transparent 60%),
+  radial-gradient(500px 380px at -10% 65%,rgba(167,139,250,.05),transparent 60%)}
+.bg-suits{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:.04;font-size:120px;line-height:1}
+.bg-suits span{position:absolute;animation:drift 40s linear infinite}
+@keyframes drift{from{transform:translateY(110vh) rotate(0)}to{transform:translateY(-130vh) rotate(60deg)}}
+#app{position:relative;z-index:2;min-height:100dvh}
+.wrap{max-width:520px;margin:0 auto;padding:14px 16px calc(40px + env(safe-area-inset-bottom,0px))}
+/* ---------- animations ---------- */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.92);opacity:0}65%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@keyframes glowP{0%,100%{box-shadow:0 0 14px rgba(245,196,81,.18)}50%{box-shadow:0 0 26px rgba(245,196,81,.45)}}
+@keyframes xpFly{0%{opacity:0;transform:translate(-50%,0) scale(.8)}15%{opacity:1;transform:translate(-50%,-10px) scale(1.05)}100%{opacity:0;transform:translate(-50%,-90px) scale(1.15)}}
+@keyframes confFall{0%{opacity:1;transform:translateY(-40px) rotate(0)}100%{opacity:0;transform:translateY(105vh) rotate(740deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+@keyframes caret{0%,45%{opacity:1}50%,100%{opacity:0}}
+@keyframes ringIn{from{stroke-dashoffset:283}to{}}
+.fadeUp{animation:fadeUp .35s ease-out both}
+/* ---------- header ---------- */
+.hdr{display:flex;justify-content:space-between;align-items:center;padding:6px 0 16px;gap:8px}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer}
+.logo:active{transform:scale(.97)}
+.logo-ic{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:21px;background:linear-gradient(140deg,#0f3d2e,#10b981 130%);border:1px solid rgba(16,185,129,.45);box-shadow:0 4px 18px rgba(16,185,129,.25)}
+.logo-tx{font-size:18px;font-weight:800;letter-spacing:-.3px}
+.logo-tx b{background:linear-gradient(120deg,#34d399,var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.logo-sub{font-size:9px;color:var(--muted);letter-spacing:1.6px;text-transform:uppercase;margin-top:-2px}
+.hdr-r{display:flex;align-items:center;gap:7px}
+.chip-btn{display:flex;align-items:center;gap:7px;padding:7px 11px;background:var(--card);border:1px solid var(--border);border-radius:11px;cursor:pointer;transition:border-color .15s;font-size:12px;font-weight:700}
+.chip-btn:active{transform:scale(.96)}
+.chip-btn .ico{font-size:15px}
+.chip-fire{color:var(--gold);border-color:rgba(245,196,81,.35);background:linear-gradient(135deg,rgba(245,196,81,.12),transparent)}
+.gear{width:38px;height:38px;display:grid;place-items:center;background:var(--card);border:1px solid var(--border);border-radius:11px;cursor:pointer;font-size:16px}
+.gear:active{transform:scale(.94)}
+/* ---------- carrière ---------- */
+.career{background:linear-gradient(150deg,var(--card),#101720 75%);border:1px solid var(--border);border-radius:var(--rad);padding:18px;margin-bottom:14px;position:relative;overflow:hidden}
+.career::before{content:'';position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,var(--accent),var(--gold),var(--purple))}
+.career-top{display:flex;align-items:center;gap:13px}
+.rank-ic{width:54px;height:54px;border-radius:15px;display:grid;place-items:center;font-size:26px;box-shadow:0 6px 16px rgba(0,0,0,.35)}
+.career-info{flex:1;min-width:0}
+.career-name{font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lvl-tag{font-size:11px;font-weight:700;color:var(--blue);background:rgba(94,170,247,.14);border:1px solid rgba(94,170,247,.3);padding:1px 8px;border-radius:7px}
+.career-sub{font-size:11.5px;color:var(--text2);margin-top:1px}
+.career-xpnum{text-align:right}
+.career-xpnum b{font-size:18px;color:var(--gold)}
+.career-xpnum span{display:block;font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
+.pbar{height:9px;background:var(--bg2);border-radius:5px;overflow:hidden;margin:13px 0 6px;position:relative}
+.pbar>div{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--accent),#34d399);transition:width .6s cubic-bezier(.22,1,.36,1);position:relative}
+.pbar>div::after{content:'';position:absolute;right:0;top:0;bottom:0;width:18px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35));animation:pulse 1.6s infinite}
+.pbar-tx{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted)}
+.pbar-tx b{color:var(--text2)}
+/* ---------- défis ---------- */
+.sect-t{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;margin:18px 2px 10px;display:flex;align-items:center;justify-content:space-between}
+.sect-t .aux{font-size:10px;letter-spacing:0;text-transform:none;color:var(--text2);font-weight:600}
+.daily{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.dch{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:11px 8px 9px;text-align:center;cursor:pointer;position:relative;transition:transform .15s,border-color .15s}
+.dch:active{transform:scale(.95)}
+.dch.done{border-color:rgba(16,185,129,.5);background:linear-gradient(160deg,rgba(16,185,129,.13),transparent)}
+.dch.done::after{content:'✓';position:absolute;top:-6px;right:-5px;width:18px;height:18px;background:var(--accent);border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:800;color:#04140d}
+.dch .ic{font-size:21px}
+.dch .nm{font-size:10px;font-weight:700;margin-top:3px}
+.dch .pg{height:4px;background:var(--bg2);border-radius:2px;margin-top:6px;overflow:hidden}
+.dch .pg>div{height:100%;background:linear-gradient(90deg,var(--accent),#34d399);border-radius:2px}
+.dch .ct{font-size:9px;color:var(--muted);margin-top:4px}
+/* ---------- grilles jeux & modes ---------- */
+.ggrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gcard{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:15px 14px;cursor:pointer;position:relative;overflow:hidden;transition:transform .15s,border-color .15s,box-shadow .15s}
+.gcard::after{content:'';position:absolute;inset:auto 0 0 0;height:2px;background:var(--gc,transparent);opacity:.7}
+.gcard:hover{border-color:var(--border2);transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.35)}
+.gcard:active{transform:scale(.97)}
+.gcard .ic{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:21px;margin-bottom:10px;background:color-mix(in srgb,var(--gc) 14%,transparent);border:1px solid color-mix(in srgb,var(--gc) 30%,transparent)}
+@supports not (background:color-mix(in srgb,red 10%,blue)){.gcard .ic{background:var(--bg2);border:1px solid var(--border)}}
+.gcard .nm{font-size:14.5px;font-weight:800}
+.gcard .ds{font-size:10.5px;color:var(--text2);margin-top:2px;line-height:1.4}
+.gcard .acc{position:absolute;top:12px;right:12px;font-size:10px;font-weight:700;padding:3px 7px;border-radius:6px;background:var(--bg2);color:var(--text2)}
+.qmodes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.qmode{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:13px 8px;text-align:center;cursor:pointer;position:relative;transition:transform .15s,border-color .15s}
+.qmode:active{transform:scale(.95)}
+.qmode .ic{font-size:22px}
+.qmode .nm{font-size:11.5px;font-weight:700;margin-top:4px}
+.qmode .sb{font-size:9px;color:var(--muted)}
+.qmode .bdg{position:absolute;top:-6px;right:-4px;min-width:18px;height:18px;padding:0 5px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:9px;display:grid;place-items:center;font-size:10px;font-weight:800;color:#231a02}
+/* ---------- setup ---------- */
+.back{background:none;border:none;color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:8px 0;margin-bottom:6px}
+.back:hover{color:var(--text2)}
+.setup-head{display:flex;align-items:center;gap:13px;margin-bottom:16px}
+.setup-head .ic{width:52px;height:52px;border-radius:15px;display:grid;place-items:center;font-size:26px;background:color-mix(in srgb,var(--gc,#10b981) 15%,transparent);border:1px solid color-mix(in srgb,var(--gc,#10b981) 35%,transparent)}
+.setup-head h2{font-size:19px;font-weight:800}
+.setup-head p{font-size:12px;color:var(--text2)}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:15px;margin-bottom:12px}
+.panel-t{font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:11px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{flex:1;min-width:58px;padding:11px 6px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;font-size:11.5px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center}
+.seg button .s{display:block;font-size:8.5px;color:var(--muted);font-weight:600;margin-top:1px}
+.seg button.on{background:var(--accent);border-color:var(--accent);color:#04140d}
+.seg button.on .s{color:rgba(4,20,13,.7)}
+.seg button:active{transform:scale(.96)}
+.infrow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px;padding:11px;background:var(--bg2);border-radius:11px}
+.infrow div{text-align:center;font-size:9px;color:var(--text2)}
+.infrow b{display:block;font-size:13px;margin-top:2px;font-family:'JetBrains Mono',monospace}
+.infrow b.g{color:var(--gold)}
+.tgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.tbtn{padding:13px 4px;background:var(--bg2);border:1px solid var(--border);border-radius:11px;cursor:pointer;text-align:center;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;transition:all .15s}
+.tbtn:active{transform:scale(.93)}
+.tbtn.ess{color:var(--gold);border-color:rgba(245,196,81,.3)}
+.tbtn.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.tbtn.ess.on{background:rgba(245,196,81,.15);border-color:var(--gold);color:var(--gold)}
+/* ---------- boutons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:15px 24px;border-radius:13px;font-size:15px;font-weight:800;cursor:pointer;border:none;transition:all .15s;letter-spacing:.2px}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.4;pointer-events:none}
+.btn-p{background:linear-gradient(135deg,#26cf96,var(--accent2));color:#04140d;box-shadow:0 6px 20px rgba(16,185,129,.3)}
+.btn-s{background:var(--card);border:1px solid var(--border2);color:var(--text)}
+.btn-w{width:100%}
+/* ---------- jeu ---------- */
+.ghead{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px}
+.gstats{display:flex;gap:6px}
+.gstat{min-width:50px;text-align:center;padding:8px 10px;background:var(--card);border:1px solid var(--border);border-radius:11px}
+.gstat b{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;display:block;line-height:1.15}
+.gstat span{font-size:8px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.gstat.ok b{color:var(--accent)}.gstat.er b{color:var(--red)}.gstat.tm b{color:var(--gold)}
+.gstat.cb{border-color:rgba(245,196,81,.5);animation:glowP 1.4s infinite}.gstat.cb b{color:var(--gold)}
+.lives{display:flex;gap:3px;align-items:center;padding:0 4px}
+.lives span{font-size:15px;filter:grayscale(1) opacity(.25);transition:filter .2s}
+.lives span.on{filter:none}
+.tbar{height:6px;background:var(--bg2);border-radius:3px;overflow:hidden;margin-bottom:12px}
+.tbar>div{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),#34d399);transition:width .1s linear}
+.tbar>div.w{background:linear-gradient(90deg,var(--gold),#fcd97a)}
+.tbar>div.d{background:linear-gradient(90deg,var(--red),#f79a9a)}
+.qcard{background:linear-gradient(150deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:20px;padding:24px 18px 20px;text-align:center;margin-bottom:12px;position:relative;transition:border-color .2s,box-shadow .2s;overflow:hidden}
+.qcard::before{content:'';position:absolute;inset:0 0 auto 0;height:3px;background:linear-gradient(90deg,transparent 4%,var(--gc,var(--accent)) 50%,transparent 96%);opacity:.55}
+.qcard.ok{border-color:rgba(16,185,129,.6);box-shadow:0 0 24px rgba(16,185,129,.18)}
+.qcard.ko{border-color:rgba(240,100,100,.6);animation:shake .4s}
+.qcard .suit{position:absolute;right:-12px;bottom:-22px;font-size:96px;opacity:.05;pointer-events:none}
+.qbadge{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;background:var(--bg2);border:1px solid var(--border);border-radius:9px;font-size:11px;font-weight:700;color:var(--text2);margin-bottom:14px}
+.qtext{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:800;line-height:1.4;letter-spacing:-.5px;min-height:38px}
+.qtext.long{font-size:20px}
+.qhint{font-size:11px;color:var(--muted);margin-top:9px;min-height:14px}
+.ansbox{display:flex;align-items:center;justify-content:center;min-height:64px;background:var(--bg);border:2px solid var(--border);border-radius:14px;margin-bottom:10px;font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:800;transition:all .15s;position:relative}
+.ansbox.ok{border-color:var(--accent);background:rgba(16,185,129,.08)}
+.ansbox.ko{border-color:var(--red);background:rgba(240,100,100,.08)}
+.ansbox .ph{color:var(--muted);font-size:22px;font-weight:600}
+.ansbox .crt{display:inline-block;width:3px;height:30px;background:var(--accent);margin-left:4px;border-radius:2px;animation:caret 1.1s infinite}
+.fbk-slot{min-height:52px;margin-bottom:10px;display:flex;flex-direction:column;justify-content:center}
+.fbk{text-align:center;padding:10px 16px;border-radius:12px;font-weight:800;font-size:14.5px;animation:pop .25s ease-out}
+.fbk.ok{background:rgba(16,185,129,.13);color:#3ddfa4;border:1px solid rgba(16,185,129,.3)}
+.fbk.ko{background:rgba(240,100,100,.12);color:var(--red);border:1px solid rgba(240,100,100,.3)}
+.fbk .big{font-family:'JetBrains Mono',monospace;font-size:17px}
+.fbk .tip{display:block;font-size:11px;font-weight:600;color:var(--text2);margin-top:3px}
+/* clavier */
+.kpad{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;user-select:none}
+.kpad button{padding:0;height:56px;background:var(--card);border:1px solid var(--border);border-radius:13px;font-family:'JetBrains Mono',monospace;font-size:21px;font-weight:700;cursor:pointer;transition:background .1s,transform .1s}
+.kpad button:active{transform:scale(.94);background:var(--card2)}
+.kpad .fn{font-size:17px;color:var(--text2);background:var(--bg2)}
+.kpad .zero{grid-column:span 2}
+.kpad .go{grid-column:span 4;height:54px;background:linear-gradient(135deg,#26cf96,var(--accent2));border:none;color:#04140d;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:800;letter-spacing:.3px;box-shadow:0 5px 16px rgba(16,185,129,.25)}
+.kpad .go:disabled{opacity:.45}
+.xpfly{position:fixed;top:34%;left:50%;font-family:'JetBrains Mono',monospace;font-size:21px;font-weight:800;color:var(--gold);filter:drop-shadow(0 0 14px rgba(245,196,81,.6));pointer-events:none;z-index:300;animation:xpFly .85s ease-out forwards}
+.combo-pop{position:fixed;top:42%;right:14px;text-align:center;pointer-events:none;z-index:120;animation:pop .3s ease-out}
+.combo-pop b{font-family:'JetBrains Mono',monospace;font-size:32px;font-weight:800;background:linear-gradient(135deg,#fde68a,var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 16px rgba(245,196,81,.5))}
+.combo-pop span{display:block;font-size:9px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:1.4px}
+/* ---------- résultats ---------- */
+.rcard{background:linear-gradient(150deg,var(--card),var(--card2));border:1px solid var(--border);border-radius:22px;padding:26px 20px;text-align:center;animation:pop .4s ease-out}
+.grade-wrap{position:relative;width:108px;height:108px;margin:0 auto 12px}
+.grade-wrap svg{transform:rotate(-90deg)}
+.grade-wrap .gl{position:absolute;inset:0;display:grid;place-items:center;font-size:42px;font-weight:800;font-family:'JetBrains Mono',monospace}
+.rtitle{font-size:21px;font-weight:800}
+.rsub{font-size:13px;color:var(--text2);margin:3px 0 18px}
+.rgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:14px}
+.rstat{background:var(--bg2);border-radius:13px;padding:14px 8px}
+.rstat b{font-family:'JetBrains Mono',monospace;font-size:23px;font-weight:800;display:block}
+.rstat span{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
+.rxp{display:flex;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,rgba(245,196,81,.14),rgba(245,196,81,.04));border:1px solid rgba(245,196,81,.3);border-radius:12px;padding:13px;margin-bottom:10px}
+.rxp b{font-family:'JetBrains Mono',monospace;font-size:17px;color:var(--gold)}
+.rxp span{font-size:11px;color:var(--text2)}
+.rrec{font-size:12px;font-weight:800;color:var(--gold);margin-bottom:12px;animation:pulse 1.6s infinite}
+.ract{display:flex;gap:10px;margin-top:6px}
+.ract .btn{flex:1}
+/* ---------- stats ---------- */
+.stgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.stcard{background:var(--bg2);border-radius:12px;padding:13px 8px;text-align:center}
+.stcard b{font-family:'JetBrains Mono',monospace;font-size:21px;font-weight:800;display:block}
+.stcard span{font-size:8.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.stcard b.g{color:var(--accent)}.stcard b.y{color:var(--gold)}.stcard b.b{color:var(--blue)}.stcard b.p{color:var(--purple)}
+.perf{margin-bottom:11px}
+.perf-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.perf-h .nm{font-size:12px;font-weight:700;display:flex;align-items:center;gap:7px}
+.perf-h .vl{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text2)}
+.perf-b{height:6px;background:var(--bg);border-radius:3px;overflow:hidden}
+.perf-b>div{height:100%;border-radius:3px;transition:width .5s}
+.sess{display:flex;justify-content:space-between;align-items:center;padding:10px 2px;border-bottom:1px solid var(--border);font-size:12px}
+.sess:last-child{border-bottom:none}
+.sess .l{display:flex;align-items:center;gap:9px}
+.sess .ic{font-size:16px}
+.sess .m{color:var(--muted);font-size:10px}
+.sess .r{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--text2)}
+.sess .r b{color:var(--accent)}
+.spark{display:flex;align-items:flex-end;gap:4px;height:56px;padding:4px 2px 0}
+.spark>div{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.spark .bar{width:100%;max-width:26px;background:linear-gradient(180deg,#34d399,var(--accent2));border-radius:4px 4px 2px 2px;min-height:3px;transition:height .4s}
+.spark .dl{font-size:8px;color:var(--muted)}
+/* ---------- modal / toast / confetti ---------- */
+.mwrap{position:fixed;inset:0;z-index:500;display:grid;place-items:center;padding:20px;background:rgba(4,6,8,.72);backdrop-filter:blur(6px);animation:fadeUp .2s ease-out}
+.modal{width:100%;max-width:380px;background:var(--card);border:1px solid var(--border2);border-radius:20px;padding:22px;animation:pop .25s ease-out}
+.modal h3{font-size:16px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.mrow{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border)}
+.mrow:last-of-type{border-bottom:none}
+.mrow .t{font-size:13px;font-weight:700}
+.mrow .d{font-size:10.5px;color:var(--muted)}
+.tgl{width:46px;height:26px;border-radius:13px;background:var(--bg2);border:1px solid var(--border2);position:relative;cursor:pointer;transition:background .2s}
+.tgl::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--muted);transition:all .2s}
+.tgl.on{background:var(--accent)}
+.tgl.on::after{left:22px;background:#fff}
+#toasts{position:fixed;top:calc(12px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);z-index:600;display:flex;flex-direction:column;gap:8px;width:min(92vw,400px);pointer-events:none}
+.toast{background:var(--card2);border:1px solid var(--border2);border-left:3px solid var(--accent);border-radius:12px;padding:12px 15px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:10px;box-shadow:0 10px 30px rgba(0,0,0,.5);animation:pop .25s ease-out}
+.toast.gold{border-left-color:var(--gold)}
+.toast .tic{font-size:19px}
+.toast .tsub{display:block;font-size:11px;font-weight:600;color:var(--text2)}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:900;overflow:hidden}
+.cf{position:absolute;top:0;animation:confFall 2.1s ease-out forwards}
+@media(max-width:390px){
+  .qtext{font-size:22px}.qtext.long{font-size:17px}
+  .ansbox{font-size:26px;min-height:58px}
+  .kpad button{height:50px;font-size:19px}
+  .daily{grid-template-columns:repeat(2,1fr)}
+  .logo-tx{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div class="bg-felt"></div>
+<div class="bg-suits" aria-hidden="true">
+  <span style="left:6%;animation-delay:-3s">♠</span>
+  <span style="left:32%;animation-delay:-16s">♦</span>
+  <span style="left:58%;animation-delay:-9s">♣</span>
+  <span style="left:82%;animation-delay:-24s">♥</span>
+</div>
+<div id="app"></div>
+<div id="toasts"></div>
+<div id="confetti"></div>
+<div id="modal"></div>
+<script>
+'use strict';
+/* =====================================================================
+   CroupierMental v5.0 — entraînement de calcul mental pour croupiers
+   Vanilla JS · zéro dépendance · fonctionne hors-ligne
+===================================================================== */
+
+/* ---------- utils ---------- */
+const $=id=>document.getElementById(id);
+const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const coin=()=>Math.random()<.5;
+const pickN=(a,n)=>{const c=[...a];for(let i=c.length-1;i>0;i--){const j=rnd(0,i);[c[i],c[j]]=[c[j],c[i]];}return c.slice(0,n);};
+const pick2=a=>pickN(a,2);
+const sum=a=>a.reduce((x,y)=>x+y,0);
+const round2=x=>Math.round(x*100)/100;
+const todayStr=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
+const fmtN=n=>{const r=round2(n);return Number.isInteger(r)?String(r):String(r).replace('.',',');};
+const fmtClock=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- config jeux & difficultés ---------- */
+const GAMES={
+  roulette:{name:'Roulette',icon:'🎡',color:'var(--c-roulette)',suit:'♦',desc:'Paiements, mises comprises, annonces en pièces'},
+  blackjack:{name:'Blackjack',icon:'🃏',color:'var(--c-blackjack)',suit:'♠',desc:'3:2, assurance, comptage, side bets'},
+  baccarat:{name:'Baccarat',icon:'🀄',color:'var(--c-baccarat)',suit:'♥',desc:'Commission 5%, égalité 8:1, paires'},
+  texas:{name:'Texas Hold’em',icon:'♠️',color:'var(--c-texas)',suit:'♣',desc:'Pots, side pots, rake 5%'},
+  ultimate:{name:'Ultimate',icon:'👑',color:'var(--c-ultimate)',suit:'♠',desc:'Ante, Play, Blind, Trips'},
+  chips:{name:'Jetons',icon:'🪙',color:'var(--c-chips)',suit:'♦',desc:'Stacks, change, échanges'},
+  tables:{name:'Tables ×',icon:'✖️',color:'var(--c-tables)',suit:'♣',desc:'5 · 8 · 11 · 17 · 35 et plus'},
+  mix:{name:'Mix Casino',icon:'🎰',color:'var(--c-mix)',suit:'♥',desc:'Tous les jeux mélangés'}
+};
+const DIFFS={
+  facile:{label:'Facile',time:25,xp:1,bets:[5,10,25,50,100],tmax:10},
+  normal:{label:'Normal',time:18,xp:1.25,bets:[5,10,25,50,75,100,150],tmax:12},
+  avance:{label:'Avancé',time:14,xp:1.5,bets:[5,10,15,25,40,50,75,100,150,200],tmax:15},
+  difficile:{label:'Difficile',time:11,xp:2,bets:[5,10,15,25,35,50,75,100,125,150,200],tmax:17},
+  expert:{label:'Expert',time:8,xp:2.5,bets:[5,10,15,25,35,45,50,60,75,80,100,125,150,175,200,250],tmax:20}
+};
+const LVL={facile:1,normal:2,avance:3,difficile:4,expert:5};
+const DIFF_KEYS=Object.keys(DIFFS);
+const ESS_TABLES=[5,8,11,17,35];
+const ALL_TABLES=[2,3,4,5,6,7,8,9,11,12,13,17,35];
+const MODES={
+  libre:{label:'Libre',icon:'🎲',desc:'Sans chrono'},
+  chrono:{label:'Chrono',icon:'⏱️',desc:'60 secondes'},
+  survie:{label:'Survie',icon:'❤️',desc:'3 vies'}
+};
+
+/* ---------- barèmes croupier ---------- */
+/*GEN-START*/
+const ROUL=[{n:'Plein',r:35},{n:'Cheval',r:17},{n:'Transversale',r:11},{n:'Carré',r:8},{n:'Sixain',r:5},{n:'Douzaine',r:2},{n:'Chance simple',r:1}];
+const ANNONCES=[{n:'Tiers du cylindre',p:6},{n:'Orphelins',p:5},{n:'Voisins du zéro',p:9},{n:'Jeu zéro',p:4}];
+const PPAIRS=[{n:'Paire mixte',r:6},{n:'Paire colorée',r:12},{n:'Paire parfaite',r:25}];
+const TRIPS=[{n:'Quinte Flush Royale',r:50},{n:'Quinte Flush',r:40},{n:'Carré',r:30},{n:'Full',r:8},{n:'Couleur',r:6},{n:'Suite',r:5},{n:'Brelan',r:3}];
+const BLIND=[{n:'Quinte Flush Royale',r:500},{n:'Quinte Flush',r:50},{n:'Carré',r:10},{n:'Full',r:3},{n:'Suite',r:1}];
+/* 25% de chance de tirer une question du niveau inférieur : variété + réalisme
+   (un croupier expert paie aussi des coups simples) */
+const effL=L=>(L>1&&Math.random()<0.25)?L-1:L;
+
+function genRoulette(d){
+  const L=effL(LVL[d]),B=DIFFS[d].bets,bet=()=>pick(B);
+  if(L===1){
+    const p=pick(ROUL),b=bet();
+    return {game:'roulette',ctx:'Paiement · '+p.n,q:`${b} × ${p.r}`,ans:b*p.r,hint:`${p.n} = ${p.r} pour 1`};
+  }
+  if(L===2){
+    if(coin()){const p=pick(ROUL),b=bet();
+      return {game:'roulette',ctx:'Mise comprise · '+p.n,q:`${b} × ${p.r+1}`,ans:b*(p.r+1),hint:'Gain + mise rendue'};}
+    const [p1,p2]=pick2(ROUL),b1=bet(),b2=bet();
+    return {game:'roulette',ctx:'2 paris gagnants',q:`(${b1}×${p1.r}) + (${b2}×${p2.r})`,ans:b1*p1.r+b2*p2.r,hint:`${p1.n} + ${p2.n}`};
+  }
+  if(L===3){
+    if(coin()){const [p1,p2]=pick2(ROUL.slice(0,5)),n1=rnd(2,5),n2=rnd(2,5);
+      return {game:'roulette',ctx:'Annonce en pièces',q:`${n1} ${p1.n} + ${n2} ${p2.n}`,ans:n1*p1.r+n2*p2.r,hint:`${p1.n}=${p1.r} · ${p2.n}=${p2.r}`};}
+    const ps=pickN(ROUL,3),bs=ps.map(()=>bet());
+    return {game:'roulette',ctx:'3 paris gagnants',q:bs.map((b,i)=>`(${b}×${ps[i].r})`).join(' + '),ans:sum(bs.map((b,i)=>b*ps[i].r)),hint:ps.map(p=>p.n).join(' + ')};
+  }
+  if(L===4){
+    if(coin()){const a=pick(ANNONCES),k=rnd(2,5),v=pick([5,10,25]);
+      return {game:'roulette',ctx:'Annonce · '+a.n,q:`${k} × ${a.p} pièces de ${v}`,ans:a.p*k*v,hint:`${a.n} = ${a.p} pièces · mise totale ?`};}
+    const ps=pickN(ROUL,3),bs=ps.map(()=>bet());
+    return {game:'roulette',ctx:'3 paris · mises comprises',q:bs.map((b,i)=>`(${b}×${ps[i].r+1})`).join(' + '),ans:sum(bs.map((b,i)=>b*(ps[i].r+1))),hint:ps.map(p=>p.n).join(' + ')};
+  }
+  if(coin()){
+    const ps=pickN(ROUL,4),bs=ps.map(()=>bet());
+    return {game:'roulette',ctx:'Rush · 4 paris',q:bs.map((b,i)=>`(${b}×${ps[i].r})`).join(' + '),ans:sum(bs.map((b,i)=>b*ps[i].r)),hint:ps.map(p=>p.n).join(' + ')};
+  }
+  const ps=pickN(ROUL.slice(0,5),3),ns=ps.map(()=>rnd(2,6));
+  return {game:'roulette',ctx:'Annonce en pièces',q:ns.map((n,i)=>`${n} ${ps[i].n}`).join(' + '),ans:sum(ns.map((n,i)=>n*ps[i].r)),hint:ps.map(p=>`${p.n}=${p.r}`).join(' · ')};
+}
+
+function genBlackjack(d){
+  const L=effL(LVL[d]),B=DIFFS[d].bets,bet=()=>pick(B);
+  const evens=B.filter(b=>b%2===0);
+  const evenBet=()=>pick(evens.length?evens:[10,20,50,100]);
+  if(L===1){
+    if(coin()){const cards=Array.from({length:rnd(2,3)},()=>rnd(2,11));
+      return {game:'blackjack',ctx:'Comptage de main',q:cards.join(' + '),ans:sum(cards),hint:`${cards.length} cartes`};}
+    const b=bet();
+    return {game:'blackjack',ctx:'Box gagnante · 1:1',q:`${b} × 1`,ans:b,hint:'Payé une fois la mise'};
+  }
+  if(L===2){
+    const t=pick(['bj','ins','count']);
+    if(t==='bj'){const b=evenBet();
+      return {game:'blackjack',ctx:'Blackjack · 3:2',q:`${b} × 1.5`,ans:b*1.5,hint:'La mise + sa moitié'};}
+    if(t==='ins'){const b=evenBet();
+      return {game:'blackjack',ctx:'Assurance · coût',q:`${b} ÷ 2`,ans:b/2,hint:'Assurance = moitié de la mise'};}
+    const cards=Array.from({length:4},()=>rnd(2,11));
+    return {game:'blackjack',ctx:'Comptage de main',q:cards.join(' + '),ans:sum(cards),hint:'4 cartes'};
+  }
+  if(L===3){
+    const t=pick(['bj','boxes','count5']);
+    if(t==='bj'){const b=bet(),a=b*1.5;
+      return {game:'blackjack',ctx:'Blackjack · 3:2',q:`${b} × 1.5`,ans:a,dec:a%1!==0,hint:a%1!==0?'Réponse avec virgule':'La mise + sa moitié'};}
+    if(t==='boxes'){const b1=evenBet(),b2=bet();
+      return {game:'blackjack',ctx:'2 boxes gagnantes',q:`(${b1}×1.5) + (${b2}×1)`,ans:b1*1.5+b2,hint:'Blackjack + gagne simple'};}
+    const cards=Array.from({length:5},()=>rnd(2,10));
+    return {game:'blackjack',ctx:'Comptage de main',q:cards.join(' + '),ans:sum(cards),hint:'5 cartes'};
+  }
+  if(L===4){
+    const t=pick(['pp','boxes3','insWin']);
+    if(t==='pp'){const p=pick(PPAIRS),b=pick(B.filter(x=>x<=50));
+      return {game:'blackjack',ctx:'Perfect Pairs · '+p.n,q:`${b} × ${p.r}`,ans:b*p.r,hint:`${p.n} payée ${p.r}:1`};}
+    if(t==='insWin'){const b=evenBet();
+      return {game:'blackjack',ctx:'Assurance gagnante · 2:1',q:`${b} × 2`,ans:b*2,hint:'Assurance payée 2 pour 1'};}
+    const b1=evenBet(),b2=bet(),b3=bet();
+    return {game:'blackjack',ctx:'3 boxes',q:`(${b1}×1.5) + ${b2} + (${b3}×2)`,ans:b1*1.5+b2+b3*2,hint:'BJ + gagne + double gagnant'};
+  }
+  if(coin()){
+    const b=bet(),s=pick(B.filter(x=>x<=50)),p=pick(PPAIRS),a=b*1.5+s*p.r;
+    return {game:'blackjack',ctx:'BJ + side bet',q:`(${b}×1.5) + (${s}×${p.r})`,ans:a,dec:a%1!==0,hint:`Blackjack 3:2 + ${p.n}`};
+  }
+  const b1=evenBet(),b2=bet(),b3=bet(),b4=evenBet();
+  return {game:'blackjack',ctx:'4 boxes',q:`(${b1}×1.5) + (${b2}×2) + ${b3} + (${b4}×1.5)`,ans:b1*1.5+b2*2+b3+b4*1.5,hint:'BJ + double + gagne + BJ'};
+}
+
+function genBaccarat(d){
+  const L=effL(LVL[d]),B=DIFFS[d].bets,bet=()=>pick(B);
+  const maxB=Math.max(...B);
+  const c20s=[20,40,60,80,100,120,140,160,180,200,240,300].filter(x=>x<=Math.max(100,maxB));
+  const b20=()=>pick(c20s);
+  if(L===1){
+    if(coin()){const b=bet();
+      return {game:'baccarat',ctx:'Joueur gagne · 1:1',q:`${b} × 1`,ans:b,hint:'Payé une fois la mise'};}
+    const b=pick(B.filter(x=>x<=100));
+    return {game:'baccarat',ctx:'Égalité · 8:1',q:`${b} × 8`,ans:b*8,hint:'Tie payé 8 pour 1'};
+  }
+  if(L===2){
+    if(coin()){const b=b20();
+      return {game:'baccarat',ctx:'Banque gagne · commission 5%',q:`${b} × 0.95`,ans:round2(b*0.95),hint:'Payé 19 pour 20'};}
+    const b=pick(B.filter(x=>x<=100));
+    return {game:'baccarat',ctx:'Égalité · 8:1',q:`${b} × 8`,ans:b*8,hint:'Tie payé 8 pour 1'};
+  }
+  if(L===3){
+    const t=pick(['pair','comm','bank']);
+    if(t==='pair'){const b=pick(B.filter(x=>x<=100));
+      return {game:'baccarat',ctx:'Paire Joueur/Banque · 11:1',q:`${b} × 11`,ans:b*11,hint:'Paire payée 11 pour 1'};}
+    if(t==='comm'){const b=b20();
+      return {game:'baccarat',ctx:'Commission à prélever',q:`5% de ${b}`,ans:round2(b*0.05),hint:'Commission banque = 5%'};}
+    const b=b20();
+    return {game:'baccarat',ctx:'Banque gagne · commission 5%',q:`${b} × 0.95`,ans:round2(b*0.95),hint:'Payé 19 pour 20'};
+  }
+  if(L===4){
+    const b1=b20(),b2=bet();
+    return {game:'baccarat',ctx:'2 mains · Banque + Joueur',q:`(${b1}×0.95) + (${b2}×1)`,ans:round2(b1*0.95+b2),hint:'Banque avec commission'};
+  }
+  if(coin()){
+    const b1=b20(),b2=pick(B.filter(x=>x<=50));
+    return {game:'baccarat',ctx:'Banque + Égalité',q:`(${b1}×0.95) + (${b2}×8)`,ans:round2(b1*0.95+b2*8),hint:'Commission 5% + Tie 8:1'};
+  }
+  const b1=b20(),b2=bet(),b3=pick(B.filter(x=>x<=50));
+  return {game:'baccarat',ctx:'Table complète',q:`(${b1}×0.95) + ${b2} + (${b3}×11)`,ans:round2(b1*0.95+b2+b3*11),hint:'Banque + Joueur + Paire'};
+}
+
+function genTexas(d){
+  const L=effL(LVL[d]),B=DIFFS[d].bets,bet=()=>pick(B);
+  const pots20=[120,140,160,180,200,220,240,260,280,300,320,340,360,400,420,440,460,480,500,540,560,600,640,700,720,800];
+  if(L===1){
+    const a=Array.from({length:rnd(2,3)},()=>bet());
+    return {game:'texas',ctx:'Calcul du pot',q:a.join(' + '),ans:sum(a),hint:`${a.length} joueurs misent`};
+  }
+  if(L===2){
+    if(coin()){const b=bet(),n=rnd(3,6);
+      return {game:'texas',ctx:'Mise collective',q:`${b} × ${n}`,ans:b*n,hint:`${n} joueurs payent ${b}`};}
+    const a=Array.from({length:4},()=>bet());
+    return {game:'texas',ctx:'Calcul du pot',q:a.join(' + '),ans:sum(a),hint:'4 joueurs misent'};
+  }
+  if(L===3){
+    if(coin()){const p=pick(pots20);
+      return {game:'texas',ctx:'Rake · 5%',q:`5% de ${p}`,ans:round2(p*0.05),hint:'Prélèvement maison'};}
+    const b=bet(),n=rnd(2,4),extra=bet();
+    return {game:'texas',ctx:'Pot + relance',q:`(${b}×${n}) + ${extra}`,ans:b*n+extra,hint:`${n} calls + 1 relance`};
+  }
+  if(L===4){
+    if(coin()){const main=pick([150,200,250,300,350,400,450,500]),s=bet(),k=rnd(2,3);
+      return {game:'texas',ctx:'Pot principal + side pot',q:`${main} + (${s}×${k})`,ans:main+s*k,hint:`Side pot : ${k} joueurs`};}
+    const p=pick(pots20);
+    return {game:'texas',ctx:'Rake · 5%',q:`5% de ${p}`,ans:round2(p*0.05),hint:'Prélèvement maison'};
+  }
+  if(coin()){
+    const main=pick([400,500,600]),s1=bet()*rnd(2,3),s2=bet()*rnd(2,3);
+    return {game:'texas',ctx:'Multi-pots',q:`${main} + ${s1} + ${s2}`,ans:main+s1+s2,hint:'Principal + 2 side pots'};
+  }
+  const p=pick(pots20);
+  return {game:'texas',ctx:'Pot net après rake 5%',q:`${p} − 5%`,ans:round2(p*0.95),hint:`Rake = ${fmtN(p*0.05)}`};
+}
+
+function genUltimate(d){
+  const L=effL(LVL[d]),B=DIFFS[d].bets,bet=()=>pick(B);
+  const evens=B.filter(b=>b%2===0);
+  if(L===1){
+    if(coin()){const a=bet();
+      return {game:'ultimate',ctx:'Ante + Blind',q:`${a} × 2`,ans:a*2,hint:'Ante = Blind'};}
+    const b=bet();
+    return {game:'ultimate',ctx:'Blind · Suite 1:1',q:`${b} × 1`,ans:b,hint:'Suite payée 1 pour 1'};
+  }
+  if(L===2){
+    const t=pick(['play','total','trips']);
+    if(t==='play'){const a=bet(),m=pick([3,4]);
+      return {game:'ultimate',ctx:`Mise Play ${m}x`,q:`${a} × ${m}`,ans:a*m,hint:`Play = ${m} fois l’ante`};}
+    if(t==='trips'){const b=pick(B.filter(x=>x<=50)),tr=pick(TRIPS.slice(4));
+      return {game:'ultimate',ctx:'Trips · '+tr.n,q:`${b} × ${tr.r}`,ans:b*tr.r,hint:`${tr.n} payé ${tr.r}:1`};}
+    const a=bet(),m=pick([2,3,4]);
+    return {game:'ultimate',ctx:'Total engagé',q:`${a} + ${a} + (${a}×${m})`,ans:a*(2+m),hint:`Ante + Blind + Play ${m}x`};
+  }
+  if(L===3){
+    if(coin()){const t=pick(TRIPS),b=pick(B.filter(x=>x<=50));
+      return {game:'ultimate',ctx:'Trips · '+t.n,q:`${b} × ${t.r}`,ans:b*t.r,hint:`${t.n} payé ${t.r}:1`};}
+    const a=bet(),m=pick([2,3,4]),n=rnd(2,3);
+    return {game:'ultimate',ctx:`${n} joueurs · Play ${m}x`,q:`(${a}×${m}) × ${n}`,ans:a*m*n,hint:`${n} mains payées Play ${m}x`};
+  }
+  if(L===4){
+    if(coin()){const h=pick(BLIND),b=h.r>=50?pick([5,10,15,25]):bet();
+      return {game:'ultimate',ctx:'Blind · '+h.n,q:`${b} × ${h.r}`,ans:b*h.r,hint:`${h.n} payé ${h.r}:1`};}
+    const b=pick(evens.length?evens:[10,20,50]);
+    return {game:'ultimate',ctx:'Blind · Couleur 3:2',q:`${b} × 1.5`,ans:b*1.5,hint:'Couleur payée 3 pour 2'};
+  }
+  if(coin()){
+    const a=bet(),m=pick([3,4]),h=pick(BLIND.filter(x=>x.r<=10));
+    return {game:'ultimate',ctx:'Gain complet',q:`${a} + (${a}×${m}) + (${a}×${h.r})`,ans:a*(1+m+h.r),hint:`Ante + Play ${m}x + Blind ${h.n}`};
+  }
+  const a=bet(),m=pick([2,3,4]),s=pick(B.filter(x=>x<=50)),t=pick(TRIPS.slice(3));
+  return {game:'ultimate',ctx:'Play + Trips',q:`(${a}×${m}) + (${s}×${t.r})`,ans:a*m+s*t.r,hint:`Play ${m}x + Trips ${t.n}`};
+}
+
+function genChips(d){
+  const L=effL(LVL[d]),B=DIFFS[d].bets;
+  if(L===1){
+    const v=pick([5,10,25,50,100]),n=rnd(4,12);
+    return {game:'chips',ctx:'Conversion',q:`${n} × ${v}`,ans:n*v,hint:`${n} jetons de ${v}`};
+  }
+  if(L===2){
+    const c1={v:pick([5,10,25]),n:rnd(2,6)},c2={v:pick([50,100]),n:rnd(1,4)};
+    return {game:'chips',ctx:'Comptage de stack',q:`(${c1.n}×${c1.v}) + (${c2.n}×${c2.v})`,ans:c1.n*c1.v+c2.n*c2.v,hint:'2 piles de jetons'};
+  }
+  if(L===3){
+    if(coin()){const v=pick([25,50,100]),k=rnd(4,15);
+      return {game:'chips',ctx:'Échange',q:`${v*k} ÷ ${v}`,ans:k,hint:'Nombre de jetons à rendre'};}
+    const c1={v:5,n:rnd(2,7)},c2={v:25,n:rnd(2,5)},c3={v:100,n:rnd(1,3)};
+    return {game:'chips',ctx:'Comptage de stack',q:`(${c1.n}×${c1.v}) + (${c2.n}×${c2.v}) + (${c3.n}×${c3.v})`,ans:c1.n*c1.v+c2.n*c2.v+c3.n*c3.v,hint:'3 piles de jetons'};
+  }
+  if(L===4){
+    if(coin()){const g=pick([200,250,300,400,500]),s=5*rnd(3,Math.floor(g/5)-2);
+      return {game:'chips',ctx:'Rendu client',q:`${g} − ${s}`,ans:g-s,hint:'Monnaie à rendre'};}
+    const c1={v:1,n:rnd(5,12)},c2={v:5,n:rnd(4,10)},c3={v:25,n:rnd(2,6)},c4={v:100,n:rnd(1,3)};
+    return {game:'chips',ctx:'Stack complet',q:`(${c4.n}×100) + (${c3.n}×25) + (${c2.n}×5) + (${c1.n}×1)`,ans:c1.n+c2.n*5+c3.n*25+c4.n*100,hint:'4 dénominations'};
+  }
+  if(coin()){
+    const target=pick([500,1000]),cur=5*rnd(20,target/5-10);
+    return {game:'chips',ctx:'Compléter le stack',q:`${target} − ${cur}`,ans:target-cur,hint:`Pour atteindre ${target}`};
+  }
+  const c1={v:1,n:rnd(6,18)},c2={v:5,n:rnd(5,14)},c3={v:25,n:rnd(3,9)},c4={v:100,n:rnd(2,5)},c5={v:500,n:rnd(0,2)};
+  const a=c1.n+c2.n*5+c3.n*25+c4.n*100+c5.n*500;
+  const parts=[c5.n?`(${c5.n}×500)`:null,`(${c4.n}×100)`,`(${c3.n}×25)`,`(${c2.n}×5)`,`(${c1.n}×1)`].filter(Boolean);
+  return {game:'chips',ctx:'Gros stack',q:parts.join(' + '),ans:a,hint:'Comptage complet'};
+}
+
+function genTables(d,tables){
+  const L=effL(LVL[d]),tmax=DIFFS[d].tmax;
+  const T=(tables&&tables.length)?tables:ESS_TABLES;
+  if(L<=2){
+    const t=pick(T),m=rnd(2,tmax);
+    return {game:'tables',ctx:'Multiplication',q:`${t} × ${m}`,ans:t*m,table:t,hint:`Table de ${t}`};
+  }
+  if(L<=4){
+    const t1=pick(T),t2=pick(T),m1=rnd(2,tmax),m2=rnd(2,Math.min(10,tmax));
+    return {game:'tables',ctx:'Double calcul',q:`(${t1}×${m1}) + (${t2}×${m2})`,ans:t1*m1+t2*m2,table:t1,hint:''};
+  }
+  const t1=pick(T),t2=pick(T),t3=pick(T),m1=rnd(2,10),m2=rnd(2,8),m3=rnd(2,6);
+  return {game:'tables',ctx:'Triple calcul',q:`(${t1}×${m1}) + (${t2}×${m2}) + (${t3}×${m3})`,ans:t1*m1+t2*m2+t3*m3,table:t1,hint:''};
+}
+
+const GENS={roulette:genRoulette,blackjack:genBlackjack,baccarat:genBaccarat,texas:genTexas,ultimate:genUltimate,chips:genChips,tables:genTables};
+function genMix(d,tables){
+  const g=pick(['roulette','blackjack','baccarat','texas','ultimate','chips','tables']);
+  return g==='tables'?genTables(d,tables):GENS[g](d);
+}
+function genQuestion(game,d,tables){
+  if(game==='mix')return genMix(d,tables);
+  if(game==='tables')return genTables(d,tables);
+  return GENS[game](d);
+}
+/*GEN-END*/
+
+/* ---------- progression ---------- */
+const RANKS=[
+  {id:'stagiaire',name:'Stagiaire',icon:'🎓',min:0,bg:'linear-gradient(135deg,#6b7280,#4b5563)'},
+  {id:'debutant',name:'Débutant',icon:'🎲',min:400,bg:'linear-gradient(135deg,#38bdf8,#0284c7)'},
+  {id:'junior',name:'Croupier Junior',icon:'🃏',min:1000,bg:'linear-gradient(135deg,#10b981,#059669)'},
+  {id:'confirme',name:'Croupier Confirmé',icon:'🎰',min:2200,bg:'linear-gradient(135deg,#f5c451,#d9a833)'},
+  {id:'senior',name:'Croupier Senior',icon:'⭐',min:4000,bg:'linear-gradient(135deg,#f97316,#ea580c)'},
+  {id:'chef',name:'Chef de Table',icon:'🎩',min:6500,bg:'linear-gradient(135deg,#a78bfa,#7c3aed)'},
+  {id:'inspecteur',name:'Inspecteur',icon:'👔',min:9500,bg:'linear-gradient(135deg,#f472b6,#db2777)'},
+  {id:'directeur',name:'Directeur de Casino',icon:'👑',min:14000,bg:'linear-gradient(135deg,#ef4444,#b91c1c)'}
+];
+const getRank=xp=>{for(let i=RANKS.length-1;i>=0;i--)if(xp>=RANKS[i].min)return RANKS[i];return RANKS[0];};
+const getNextRank=xp=>RANKS.find(r=>xp<r.min)||null;
+function levelInfo(xp){let l=1,need=100,rest=xp;while(rest>=need){rest-=need;l++;need=100+l*20;}return {level:l,into:rest,need};}
+const BASE_XP=10;
+const CHALL_BONUS=40;
+
+const CHALL_POOL=[
+  {id:'tables',game:'tables',target:12},
+  {id:'roulette',game:'roulette',target:10},
+  {id:'blackjack',game:'blackjack',target:10},
+  {id:'baccarat',game:'baccarat',target:8},
+  {id:'texas',game:'texas',target:8},
+  {id:'ultimate',game:'ultimate',target:8},
+  {id:'chips',game:'chips',target:8},
+  {id:'mix',game:'mix',target:15}
+];
+function todayChalls(){
+  const seed=todayStr().split('-').reduce((a,b)=>a+parseInt(b,10),0);
+  const c=[...CHALL_POOL];
+  for(let i=c.length-1;i>0;i--){const j=(seed*(i+7)*31)%(i+1);[c[i],c[j]]=[c[j],c[i]];}
+  return c.slice(0,4);
+}
+
+/* ---------- stockage ---------- */
+const KEY='croupier_v5';
+function defaultStats(){
+  return {xp:0,total:0,correct:0,bestStreak:0,timeMs:0,timeN:0,
+    byGame:{},errors:[],daily:{},challs:{},challDone:{},
+    streakDays:0,lastDay:null,bests:{},sessions:[],
+    settings:{sound:true,vibe:true}};
+}
+function loadStats(){
+  try{
+    const raw=localStorage.getItem(KEY);
+    if(raw){const s=JSON.parse(raw);return Object.assign(defaultStats(),s,{settings:Object.assign({sound:true,vibe:true},s.settings||{})});}
+    const old=localStorage.getItem('croupier_v43');
+    if(old){
+      const o=JSON.parse(old),s=defaultStats();
+      s.xp=o.xp||0;s.total=o.total||0;s.correct=o.correct||0;
+      s.bestStreak=o.best||0;s.streakDays=o.streak||0;s.lastDay=o.last||null;
+      s.errors=(o.errors||[]).map(e=>({q:e.q,ans:e.ans,ctx:e.ctx||'Révision',game:e.type==='poker_texas'?'texas':e.type==='poker_ultimate'?'ultimate':(e.type||'tables')}));
+      return s;
+    }
+  }catch(e){}
+  return defaultStats();
+}
+let S=loadStats();
+let saveT=null;
+function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}},150);}
+
+/* ---------- audio & haptique ---------- */
+let AC=null;
+function beep(freq,dur,type='sine',vol=0.12,when=0){
+  if(!S.settings.sound)return;
+  try{
+    AC=AC||new (window.AudioContext||window.webkitAudioContext)();
+    if(AC.state==='suspended')AC.resume();
+    const t=AC.currentTime+when,o=AC.createOscillator(),g=AC.createGain();
+    o.type=type;o.frequency.value=freq;
+    g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(0.001,t+dur);
+    o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+dur);
+  }catch(e){}
+}
+const sfx={
+  ok(){beep(660,.09);beep(880,.12,'sine',.12,.07);},
+  ko(){beep(180,.22,'square',.07);},
+  combo(){beep(660,.08);beep(830,.08,'sine',.12,.06);beep(990,.14,'sine',.12,.12);},
+  end(){beep(523,.12);beep(659,.12,'sine',.12,.1);beep(784,.2,'sine',.12,.2);},
+  rank(){[523,659,784,1047].forEach((f,i)=>beep(f,.18,'sine',.13,i*.11));},
+  key(){beep(440,.03,'sine',.04);}
+};
+function vibe(p){if(S.settings.vibe&&navigator.vibrate)try{navigator.vibrate(p);}catch(e){}}
+
+/* ---------- toasts & confetti ---------- */
+function toast(icon,txt,sub,gold){
+  const el=document.createElement('div');
+  el.className='toast'+(gold?' gold':'');
+  el.innerHTML=`<span class="tic">${icon}</span><span>${esc(txt)}${sub?`<span class="tsub">${esc(sub)}</span>`:''}</span>`;
+  $('toasts').appendChild(el);
+  setTimeout(()=>{el.style.transition='opacity .3s';el.style.opacity='0';setTimeout(()=>el.remove(),320);},2600);
+}
+function confetti(n=46){
+  const colors=['#10b981','#f5c451','#a78bfa','#f06464','#5eaaf7','#f472b6'];
+  const box=$('confetti');
+  for(let i=0;i<n;i++){
+    const d=document.createElement('div');
+    d.className='cf';
+    const s=5+Math.random()*7;
+    d.style.cssText=`left:${Math.random()*100}%;width:${s}px;height:${s}px;background:${pick(colors)};border-radius:${Math.random()>.5?'50%':'2px'};animation-delay:${Math.random()*.5}s`;
+    box.appendChild(d);
+    setTimeout(()=>d.remove(),2700);
+  }
+}
+
+/* ---------- enregistrement des réponses ---------- */
+function recordAnswer(ok,q,ms,sess){
+  const before={rank:getRank(S.xp),level:levelInfo(S.xp).level};
+  const td=todayStr();
+  // streak quotidien
+  if(S.lastDay!==td){
+    const y=new Date();y.setDate(y.getDate()-1);
+    const ys=`${y.getFullYear()}-${String(y.getMonth()+1).padStart(2,'0')}-${String(y.getDate()).padStart(2,'0')}`;
+    S.streakDays=(S.lastDay===ys)?(S.streakDays||0)+1:1;
+    S.lastDay=td;
+  }
+  S.total++;if(ok)S.correct++;
+  const g=S.byGame[q.game]||{c:0,t:0};g.t++;if(ok)g.c++;S.byGame[q.game]=g;
+  S.daily[td]=(S.daily[td]||0)+1;
+  if(ms!=null){S.timeMs+=ms;S.timeN++;}
+  // erreurs
+  if(!ok&&!q.isRevision){
+    if(!S.errors.some(e=>e.q===q.q))S.errors.push({q:q.q,ans:q.ans,ctx:q.ctx,game:q.game,dec:q.dec});
+    if(S.errors.length>60)S.errors=S.errors.slice(-60);
+  }
+  if(ok&&q.isRevision)S.errors=S.errors.filter(e=>e.q!==q.q);
+  // XP
+  let xpGain=0;
+  if(ok){
+    const comboMult=Math.min(1+Math.floor(sess.combo/4),3);
+    const speedBonus=(sess.qLimit&&ms!=null&&ms<sess.qLimit*400)?5:0;
+    xpGain=Math.round(BASE_XP*DIFFS[sess.diff].xp*comboMult)+speedBonus;
+    if(sess.mode==='survie')xpGain=Math.round(xpGain*1.2);
+    S.xp+=xpGain;
+  }
+  // défis du jour (tout mode confondu)
+  if(ok){
+    if(!S.challs[td])S.challs[td]={};
+    if(!S.challDone[td])S.challDone[td]={};
+    todayChalls().forEach(ch=>{
+      if(ch.game===q.game||(ch.game==='mix')){
+        S.challs[td][ch.id]=(S.challs[td][ch.id]||0)+1;
+        if(S.challs[td][ch.id]>=ch.target&&!S.challDone[td][ch.id]){
+          S.challDone[td][ch.id]=true;S.xp+=CHALL_BONUS;
+          toast('🎯',`Défi ${GAMES[ch.game].name} réussi !`,`+${CHALL_BONUS} XP bonus`,true);
+          confetti(30);sfx.combo();
+        }
+      }
+    });
+  }
+  // montées de grade / niveau
+  const after={rank:getRank(S.xp),level:levelInfo(S.xp).level};
+  if(after.rank.id!==before.rank.id){toast(after.rank.icon,`Promotion : ${after.rank.name} !`,'Nouveau grade débloqué',true);confetti(70);sfx.rank();vibe([40,60,40,60,120]);}
+  else if(after.level>before.level){toast('⬆️',`Niveau ${after.level} !`,null,true);sfx.combo();}
+  save();
+  return xpGain;
+}
+
+/* ============================ MOTEUR DE JEU ============================ */
+let sess=null;
+let tick=null;
+
+function startSession(game,mode,diff,tables,revision){
+  if(tick)clearInterval(tick);
+  const cfg=DIFFS[diff];
+  sess={
+    game,mode,diff,tables:tables||[...UI.selTables],
+    ok:0,err:0,combo:0,bestCombo:0,xp:0,
+    lives:mode==='survie'?3:0,
+    chrono:mode==='chrono'?60:0,
+    qLimit:0,qLeft:0,q:null,ans:'',locked:false,
+    qStart:0,times:[],paused:false,over:false,
+    isRevision:!!revision,queue:revision?pickN(S.errors,S.errors.length):null,
+    started:Date.now()
+  };
+  render('game');
+  nextQ();
+  tick=setInterval(gameTick,100);
+}
+
+function questionTime(){
+  const base=DIFFS[sess.diff].time;
+  if(sess.mode==='libre')return 0;
+  if(sess.mode==='chrono')return 0;
+  if(sess.mode==='survie')return Math.max(base*0.45,base*(1-sess.ok*0.018));
+  return base;
+}
+
+function nextQ(){
+  if(sess.isRevision){
+    if(!sess.queue.length){endSession();return;}
+    const e=sess.queue.shift();
+    sess.q={...e,isRevision:true};
+  }else{
+    sess.q=genQuestion(sess.game,sess.diff,sess.tables);
+  }
+  sess.ans='';sess.locked=false;
+  sess.qLimit=questionTime();sess.qLeft=sess.qLimit;
+  sess.qStart=Date.now();
+  paintQuestion();
+}
+
+function gameTick(){
+  if(!sess||sess.over||sess.paused||sess.locked)return;
+  if(sess.mode==='chrono'){
+    sess.chrono-=0.1;
+    const el=$('g-clock');if(el)el.textContent=fmtClock(Math.max(0,Math.ceil(sess.chrono)));
+    const b=$('g-tfill');
+    if(b){const p=Math.max(0,sess.chrono/60*100);b.style.width=p+'%';b.className=p<20?'d':p<45?'w':'';}
+    if(sess.chrono<=0){endSession();return;}
+  }
+  if(sess.qLimit>0){
+    sess.qLeft-=0.1;
+    const b=$('g-tfill');
+    if(b&&sess.mode!=='chrono'){const p=Math.max(0,sess.qLeft/sess.qLimit*100);b.style.width=p+'%';b.className=p<25?'d':p<50?'w':'';}
+    if(sess.qLeft<=0)answerResult(false,true);
+  }
+}
+
+function submitAnswer(){
+  if(!sess||sess.locked||sess.ans===''||sess.ans==='-'||sess.ans==='.')return;
+  const v=parseFloat(sess.ans.replace(',','.'));
+  if(isNaN(v))return;
+  answerResult(Math.abs(v-sess.q.ans)<0.001,false);
+}
+
+function answerResult(ok,timedOut){
+  if(sess.locked)return;
+  sess.locked=true;
+  const ms=Date.now()-sess.qStart;
+  sess.times.push(ms);
+  const q=sess.q;
+  if(ok){
+    sess.ok++;sess.combo++;sess.bestCombo=Math.max(sess.bestCombo,sess.combo);
+    if(sess.combo>S.bestStreak){S.bestStreak=sess.combo;}
+    const gain=recordAnswer(true,q,ms,sess);
+    sess.xp+=gain;
+    sfx.ok();vibe(18);
+    flyXp(gain);
+    if(sess.combo%5===0){confetti(22);sfx.combo();}
+  }else{
+    sess.err++;sess.combo=0;
+    recordAnswer(false,q,timedOut?null:ms,sess);
+    sfx.ko();vibe([60,40,60]);
+    if(sess.mode==='survie'){sess.lives--;}
+  }
+  paintFeedback(ok,timedOut);
+  paintStats();
+  if(sess.mode==='survie'&&sess.lives<=0){
+    setTimeout(endSession,1500);
+    return;
+  }
+  setTimeout(()=>{if(sess&&!sess.over)nextQ();},ok?550:1700);
+}
+
+function endSession(){
+  if(!sess||sess.over)return;
+  sess.over=true;
+  if(tick){clearInterval(tick);tick=null;}
+  // records
+  let record=false;
+  if(sess.mode==='chrono'){
+    const k='chrono_'+sess.diff;
+    if(sess.ok>(S.bests[k]||0)){S.bests[k]=sess.ok;record=sess.ok>=5;}
+  }
+  if(sess.mode==='survie'){
+    const k='survie_'+sess.diff;
+    if(sess.ok>(S.bests[k]||0)){S.bests[k]=sess.ok;record=sess.ok>=5;}
+  }
+  // historique sessions
+  if(sess.ok+sess.err>0){
+    S.sessions.unshift({d:Date.now(),g:sess.game,m:sess.mode,df:sess.diff,ok:sess.ok,err:sess.err,xp:sess.xp,rev:sess.isRevision});
+    if(S.sessions.length>20)S.sessions=S.sessions.slice(0,20);
+  }
+  save();
+  sfx.end();
+  render('results',{record});
+  const acc=sess.ok+sess.err?sess.ok/(sess.ok+sess.err):0;
+  if(record||acc>=0.9&&sess.ok>=8)confetti(60);
+}
+
+function flyXp(gain){
+  const el=document.createElement('div');
+  el.className='xpfly';el.textContent='+'+gain+' XP';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(),900);
+}
+
+/* ---------- clavier ---------- */
+function kpress(k){
+  if(!sess||sess.over)return;
+  if(k==='go'){submitAnswer();return;}
+  if(sess.locked)return;
+  sfx.key();
+  if(k==='back'){sess.ans=sess.ans.slice(0,-1);}
+  else if(k==='clear'){sess.ans='';}
+  else if(k==='.'){if(!sess.ans.includes('.'))sess.ans=(sess.ans||'0')+'.';}
+  else{if(sess.ans.length<8)sess.ans+=k;}
+  paintAns();
+}
+document.addEventListener('keydown',e=>{
+  if(!sess||sess.over)return;
+  const v=UI.view;
+  if(v!=='game')return;
+  if(e.key>='0'&&e.key<='9')kpress(e.key);
+  else if(e.key==='.'||e.key===',')kpress('.');
+  else if(e.key==='Backspace')kpress('back');
+  else if(e.key==='Enter')kpress('go');
+  else if(e.key==='Escape')UI.quitGame();
+});
+document.addEventListener('visibilitychange',()=>{if(sess&&!sess.over)sess.paused=document.hidden;});
+
+/* ============================ RENDU UI ============================ */
+const UI={
+  view:'home',
+  selGame:'roulette',
+  selMode:'libre',
+  selDiff:localStorage.getItem('cm5_diff')||'normal',
+  selTables:[...ESS_TABLES],
+
+  go(v,data){render(v,data);},
+  home(){if(sess&&!sess.over){if(!confirm('Quitter la session en cours ?'))return;sess.over=true;if(tick){clearInterval(tick);tick=null;}}sess=null;render('home');},
+  openSetup(g){UI.selGame=g;render('setup');},
+  setMode(m){UI.selMode=m;render('setup');},
+  setDiff(d){UI.selDiff=d;localStorage.setItem('cm5_diff',d);render('setup');},
+  togTable(n){const t=UI.selTables;UI.selTables=t.includes(n)?t.filter(x=>x!==n):[...t,n];render('setup');},
+  launch(){startSession(UI.selGame,UI.selMode,UI.selDiff,UI.selTables);},
+  startChall(chId){
+    const ch=todayChalls().find(c=>c.id===chId);if(!ch)return;
+    UI.selGame=ch.game;UI.selMode='libre';
+    startSession(ch.game,'libre',UI.selDiff,UI.selTables);
+  },
+  quickMode(m){UI.selGame='mix';UI.selMode=m;render('setup');},
+  revision(){if(!S.errors.length)return;startSession('mix','libre',UI.selDiff,UI.selTables,true);},
+  quitGame(){
+    if(sess&&!sess.over&&(sess.ok+sess.err)>0){endSession();return;}
+    if(tick){clearInterval(tick);tick=null;}
+    if(sess)sess.over=true;sess=null;render('home');
+  },
+  replay(){startSession(sess.game,sess.mode,sess.diff,sess.tables,sess.isRevision);},
+  stats(){render('stats');},
+  key(k){kpress(k);},
+  settings(){openSettings();},
+  closeModal(){$('modal').innerHTML='';},
+  toggle(k){S.settings[k]=!S.settings[k];save();openSettings();if(k==='sound'&&S.settings.sound)sfx.ok();if(k==='vibe'&&S.settings.vibe)vibe(30);},
+  resetAll(){if(confirm('Tout réinitialiser ? Progression, XP et statistiques seront perdus.')){localStorage.removeItem(KEY);localStorage.removeItem('croupier_v43');S=defaultStats();UI.closeModal();render('home');toast('🗑️','Données réinitialisées');}}
+};
+
+function render(view,data){
+  UI.view=view;
+  const app=$('app');
+  if(view==='home')app.innerHTML=rHome();
+  else if(view==='setup')app.innerHTML=rSetup();
+  else if(view==='game')app.innerHTML=rGame();
+  else if(view==='results')app.innerHTML=rResults(data||{});
+  else if(view==='stats')app.innerHTML=rStats();
+  window.scrollTo(0,0);
+}
+
+/* ---------- header ---------- */
+function rHeader(){
+  const r=getRank(S.xp),li=levelInfo(S.xp);
+  return `<header class="hdr">
+    <div class="logo" onclick="UI.home()">
+      <div class="logo-ic">🎰</div>
+      <div><div class="logo-tx">Croupier<b>Mental</b></div><div class="logo-sub">v5 · entraînement pro</div></div>
+    </div>
+    <div class="hdr-r">
+      ${S.streakDays>1?`<div class="chip-btn chip-fire"><span class="ico">🔥</span>${S.streakDays}j</div>`:''}
+      <div class="chip-btn" onclick="UI.stats()"><span class="ico">${r.icon}</span>Nv.${li.level}</div>
+      <div class="gear" onclick="UI.settings()">⚙️</div>
+    </div>
+  </header>`;
+}
+
+/* ---------- accueil ---------- */
+function rHome(){
+  const r=getRank(S.xp),nx=getNextRank(S.xp),li=levelInfo(S.xp);
+  const acc=S.total?Math.round(S.correct/S.total*100):0;
+  const pct=nx?Math.round((S.xp-r.min)/(nx.min-r.min)*100):100;
+  const td=todayStr(),prog=S.challs[td]||{};
+  const challs=todayChalls();
+  const nDone=challs.filter(c=>(prog[c.id]||0)>=c.target).length;
+  return `<div class="wrap fadeUp">
+    ${rHeader()}
+    <div class="career" onclick="UI.stats()" style="cursor:pointer">
+      <div class="career-top">
+        <div class="rank-ic" style="background:${r.bg}">${r.icon}</div>
+        <div class="career-info">
+          <div class="career-name">${r.name} <span class="lvl-tag">Nv.${li.level}</span></div>
+          <div class="career-sub">${S.correct} bonnes réponses · ${acc}% de précision</div>
+        </div>
+        <div class="career-xpnum"><b class="mono">${S.xp}</b><span>XP total</span></div>
+      </div>
+      <div class="pbar"><div style="width:${pct}%"></div></div>
+      <div class="pbar-tx">
+        <span>${r.name}</span>
+        ${nx?`<span><b>${nx.min-S.xp} XP</b> → ${nx.icon} ${nx.name}</span>`:'<span style="color:var(--gold)">🏆 Grade maximum</span>'}
+      </div>
+    </div>
+
+    <div class="sect-t">Défis du jour <span class="aux">${nDone}/4 · +${CHALL_BONUS} XP chacun</span></div>
+    <div class="daily">
+      ${challs.map(c=>{
+        const p=Math.min(prog[c.id]||0,c.target),done=p>=c.target,g=GAMES[c.game];
+        return `<div class="dch ${done?'done':''}" onclick="${done?'':`UI.startChall('${c.id}')`}">
+          <div class="ic">${g.icon}</div><div class="nm">${g.name}</div>
+          <div class="pg"><div style="width:${p/c.target*100}%"></div></div>
+          <div class="ct mono">${p}/${c.target}</div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div class="sect-t">Modes rapides</div>
+    <div class="qmodes">
+      <div class="qmode" onclick="UI.quickMode('chrono')"><div class="ic">⏱️</div><div class="nm">Chrono</div><div class="sb">60 s · Mix</div></div>
+      <div class="qmode" onclick="UI.quickMode('survie')"><div class="ic">❤️</div><div class="nm">Survie</div><div class="sb">3 vies · Mix</div></div>
+      <div class="qmode" onclick="UI.revision()" ${S.errors.length?'':'style="opacity:.45"'}>
+        ${S.errors.length?`<div class="bdg">${S.errors.length}</div>`:''}
+        <div class="ic">🔄</div><div class="nm">Révision</div><div class="sb">${S.errors.length?'Tes erreurs':'Aucune erreur'}</div>
+      </div>
+    </div>
+
+    <div class="sect-t">Tables de jeu</div>
+    <div class="ggrid">
+      ${Object.entries(GAMES).map(([k,g])=>{
+        const st=S.byGame[k],a=st&&st.t?Math.round(st.c/st.t*100):null;
+        return `<div class="gcard" style="--gc:${g.color}" onclick="UI.openSetup('${k}')">
+          ${a!=null?`<div class="acc mono">${a}%</div>`:''}
+          <div class="ic">${g.icon}</div>
+          <div class="nm">${g.name}</div>
+          <div class="ds">${g.desc}</div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <div class="sect-t">Suivi</div>
+    <div class="ggrid">
+      <div class="gcard" style="--gc:var(--blue);grid-column:span 2" onclick="UI.stats()">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="ic" style="margin-bottom:0">📊</div>
+          <div><div class="nm">Statistiques détaillées</div><div class="ds">Progression, précision par jeu, historique</div></div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------- setup ---------- */
+function rSetup(){
+  const g=GAMES[UI.selGame],cfg=DIFFS[UI.selDiff];
+  const isTables=UI.selGame==='tables'||UI.selGame==='mix';
+  return `<div class="wrap fadeUp">
+    ${rHeader()}
+    <button class="back" onclick="UI.home()">← Retour</button>
+    <div class="setup-head" style="--gc:${g.color}">
+      <div class="ic">${g.icon}</div>
+      <div><h2>${g.name}</h2><p>${g.desc}</p></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-t">Mode de jeu</div>
+      <div class="seg">
+        ${Object.entries(MODES).map(([k,m])=>`<button class="${UI.selMode===k?'on':''}" onclick="UI.setMode('${k}')">${m.icon} ${m.label}<span class="s">${m.desc}</span></button>`).join('')}
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-t">Difficulté</div>
+      <div class="seg">
+        ${DIFF_KEYS.map(k=>`<button class="${UI.selDiff===k?'on':''}" onclick="UI.setDiff('${k}')">${DIFFS[k].label}</button>`).join('')}
+      </div>
+      <div class="infrow">
+        <div>⏱️ Temps<b>${UI.selMode==='libre'?'∞':UI.selMode==='chrono'?'60s':cfg.time+'s'}</b></div>
+        <div>🎚️ Niveau<b>${LVL[UI.selDiff]}/5</b></div>
+        <div>💰 Mises<b>${Math.min(...cfg.bets)}–${Math.max(...cfg.bets)}</b></div>
+        <div>⭐ XP<b class="g">×${cfg.xp}</b></div>
+      </div>
+    </div>
+
+    ${isTables?`<div class="panel">
+      <div class="panel-t">Tables travaillées ${UI.selGame==='mix'?'(pour les questions ×)':''}</div>
+      <div class="tgrid" style="margin-bottom:10px">
+        ${ESS_TABLES.map(n=>`<div class="tbtn ess ${UI.selTables.includes(n)?'on':''}" onclick="UI.togTable(${n})">${n}</div>`).join('')}
+      </div>
+      <div class="tgrid">
+        ${ALL_TABLES.filter(n=>!ESS_TABLES.includes(n)).map(n=>`<div class="tbtn ${UI.selTables.includes(n)?'on':''}" onclick="UI.togTable(${n})">${n}</div>`).join('')}
+      </div>
+    </div>`:''}
+
+    <button class="btn btn-p btn-w" onclick="UI.launch()" ${isTables&&!UI.selTables.length?'disabled':''}>
+      ${MODES[UI.selMode].icon} Lancer · ${MODES[UI.selMode].label} ${cfg.label}
+    </button>
+  </div>`;
+}
+
+/* ---------- jeu ---------- */
+function rGame(){
+  const g=GAMES[sess.game];
+  return `<div class="wrap fadeUp" style="padding-top:10px">
+    <div class="ghead">
+      <button class="back" style="margin:0;padding:6px 0" onclick="UI.quitGame()">✕ Quitter</button>
+      <div class="gstats">
+        ${sess.mode==='chrono'?`<div class="gstat tm"><b id="g-clock">1:00</b><span>temps</span></div>`:''}
+        ${sess.mode==='survie'?`<div class="gstat"><div class="lives" id="g-lives">${rLives()}</div><span>vies</span></div>`:''}
+        <div class="gstat ok"><b id="g-ok">0</b><span>justes</span></div>
+        <div class="gstat er"><b id="g-err">0</b><span>fautes</span></div>
+        <div class="gstat cb" id="g-combo" style="display:none"><b>🔥0</b><span>série</span></div>
+      </div>
+    </div>
+    ${(sess.mode==='chrono'||questionTime()>0)?`<div class="tbar"><div id="g-tfill" style="width:100%"></div></div>`:''}
+    <div class="qcard" id="g-card" style="--gc:${GAMES[sess.game].color}">
+      <span class="suit">${g.suit}</span>
+      <div><span class="qbadge" id="g-badge">${g.icon} …</span></div>
+      <div class="qtext" id="g-q"></div>
+      <div class="qhint" id="g-hint"></div>
+    </div>
+    <div class="ansbox" id="g-ans"><span class="ph">Ta réponse…</span></div>
+    <div class="fbk-slot" id="g-fbk"></div>
+    <div class="kpad">
+      <button onclick="UI.key('7')">7</button><button onclick="UI.key('8')">8</button><button onclick="UI.key('9')">9</button><button class="fn" onclick="UI.key('back')">⌫</button>
+      <button onclick="UI.key('4')">4</button><button onclick="UI.key('5')">5</button><button onclick="UI.key('6')">6</button><button class="fn" onclick="UI.key('clear')">C</button>
+      <button onclick="UI.key('1')">1</button><button onclick="UI.key('2')">2</button><button onclick="UI.key('3')">3</button><button class="fn" onclick="UI.key('.')">,</button>
+      <button class="zero" onclick="UI.key('0')">0</button><button class="zero" onclick="UI.key('00')">00</button>
+      <button class="go" onclick="UI.key('go')">Valider ✓</button>
+    </div>
+    ${sess.mode==='libre'?`<button class="btn btn-s btn-w" style="margin-top:12px" onclick="endSession()">🏁 Terminer la session</button>`:''}
+  </div>`;
+}
+function rLives(){return [0,1,2].map(i=>`<span class="${i<sess.lives?'on':''}">❤️</span>`).join('');}
+
+function paintQuestion(){
+  const q=sess.q,g=GAMES[q.game]||GAMES.mix;
+  const card=$('g-card');if(!card)return;
+  card.classList.remove('ok','ko');
+  card.style.setProperty('--gc',g.color);
+  card.querySelector('.suit').textContent=g.suit;
+  $('g-badge').innerHTML=`${g.icon} ${esc(q.isRevision?'Révision · '+q.ctx:q.ctx)}`;
+  const qt=$('g-q');
+  qt.textContent=q.q;
+  qt.classList.toggle('long',q.q.length>22);
+  $('g-hint').textContent=q.hint||'';
+  $('g-fbk').innerHTML='';
+  if(sess.qLimit>0){const b=$('g-tfill');if(b){b.style.width='100%';b.className='';}}
+  paintAns();
+}
+function paintAns(){
+  const el=$('g-ans');if(!el)return;
+  el.classList.remove('ok','ko');
+  el.innerHTML=sess.ans?`${esc(sess.ans.replace('.',','))}<span class="crt"></span>`:'<span class="ph">Ta réponse…</span><span class="crt"></span>';
+}
+function paintStats(){
+  const ok=$('g-ok'),er=$('g-err');
+  if(ok)ok.textContent=sess.ok;
+  if(er)er.textContent=sess.err;
+  const cb=$('g-combo');
+  if(cb){
+    if(sess.combo>=3){cb.style.display='';cb.querySelector('b').textContent='🔥'+sess.combo;}
+    else cb.style.display='none';
+  }
+  const lv=$('g-lives');if(lv)lv.innerHTML=rLives();
+}
+function paintFeedback(ok,timedOut){
+  const card=$('g-card'),ab=$('g-ans'),fb=$('g-fbk');
+  if(!card)return;
+  card.classList.add(ok?'ok':'ko');
+  ab.classList.add(ok?'ok':'ko');
+  if(ok){
+    fb.innerHTML=`<div class="fbk ok">✓ Exact ! <span class="big mono">${fmtN(sess.q.ans)}</span></div>`;
+  }else{
+    fb.innerHTML=`<div class="fbk ko">${timedOut?'⏱ Temps écoulé':'✗ Raté'} — réponse : <span class="big mono">${fmtN(sess.q.ans)}</span>${sess.q.hint?`<span class="tip">${esc(sess.q.hint)}</span>`:''}</div>`;
+  }
+  if(sess.combo>=4){
+    const old=document.querySelector('.combo-pop');if(old)old.remove();
+    const cp=document.createElement('div');
+    cp.className='combo-pop';
+    cp.innerHTML=`<b>×${Math.min(1+Math.floor(sess.combo/4),3)}</b><span>combo</span>`;
+    document.body.appendChild(cp);
+    setTimeout(()=>cp.remove(),900);
+  }
+}
+
+/* ---------- résultats ---------- */
+function rResults({record}){
+  const n=sess.ok+sess.err,acc=n?Math.round(sess.ok/n*100):0;
+  const avg=sess.times.length?(sess.times.reduce((a,b)=>a+b,0)/sess.times.length/1000):0;
+  let grade,gc,msg;
+  if(n>=8&&acc>=95){grade='S';gc='var(--gold)';msg='Niveau direction de salle !';}
+  else if(acc>=85){grade='A';gc='var(--accent)';msg='Excellent travail !';}
+  else if(acc>=70){grade='B';gc='var(--blue)';msg='Solide, continue !';}
+  else if(acc>=50){grade='C';gc='var(--purple)';msg='Ça progresse !';}
+  else{grade='D';gc='var(--red)';msg='On reprend les bases.';}
+  const circ=2*Math.PI*45,off=circ*(1-acc/100);
+  const g=GAMES[sess.game],m=MODES[sess.mode];
+  return `<div class="wrap fadeUp">
+    ${rHeader()}
+    <div class="rcard">
+      <div class="grade-wrap">
+        <svg width="108" height="108" viewBox="0 0 108 108">
+          <circle cx="54" cy="54" r="45" fill="none" stroke="var(--bg2)" stroke-width="9"/>
+          <circle cx="54" cy="54" r="45" fill="none" stroke="${gc}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${circ}" stroke-dashoffset="${off}" style="transition:stroke-dashoffset 1s ease;animation:ringIn 1s ease"/>
+        </svg>
+        <div class="gl" style="color:${gc}">${grade}</div>
+      </div>
+      <div class="rtitle">${sess.isRevision?'Révision terminée':'Session terminée'}</div>
+      <div class="rsub">${g.icon} ${g.name} · ${m.label} ${DIFFS[sess.diff].label} — ${msg}</div>
+      ${record?'<div class="rrec">🏆 Nouveau record personnel !</div>':''}
+      <div class="rgrid">
+        <div class="rstat"><b style="color:var(--accent)">${sess.ok}</b><span>justes</span></div>
+        <div class="rstat"><b style="color:var(--red)">${sess.err}</b><span>fautes</span></div>
+        <div class="rstat"><b style="color:var(--gold)">${acc}%</b><span>précision</span></div>
+      </div>
+      <div class="rgrid">
+        <div class="rstat"><b>🔥${sess.bestCombo}</b><span>meilleure série</span></div>
+        <div class="rstat"><b>${avg?avg.toFixed(1)+'s':'—'}</b><span>temps moyen</span></div>
+        <div class="rstat"><b class="mono" style="color:var(--blue)">Nv.${levelInfo(S.xp).level}</b><span>niveau</span></div>
+      </div>
+      <div class="rxp">⭐ <b>+${sess.xp} XP</b><span>· ${DIFFS[sess.diff].label} ×${DIFFS[sess.diff].xp}${sess.mode==='survie'?' · Survie ×1.2':''}</span></div>
+      <div class="ract">
+        <button class="btn btn-s" onclick="UI.home()">Menu</button>
+        <button class="btn btn-p" onclick="UI.replay()">↻ Rejouer</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ---------- stats ---------- */
+function rStats(){
+  const acc=S.total?Math.round(S.correct/S.total*100):0;
+  const li=levelInfo(S.xp),r=getRank(S.xp),nx=getNextRank(S.xp);
+  const avg=S.timeN?(S.timeMs/S.timeN/1000).toFixed(1)+'s':'—';
+  const pct=nx?Math.round((S.xp-r.min)/(nx.min-r.min)*100):100;
+  // 7 derniers jours
+  const days=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const k=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    days.push({l:['D','L','M','M','J','V','S'][d.getDay()],n:S.daily[k]||0});
+  }
+  const mx=Math.max(...days.map(d=>d.n),1);
+  const fmtDate=t=>{const d=new Date(t);return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}`;};
+  return `<div class="wrap fadeUp">
+    ${rHeader()}
+    <button class="back" onclick="UI.home()">← Retour</button>
+
+    <div class="career">
+      <div class="career-top">
+        <div class="rank-ic" style="background:${r.bg}">${r.icon}</div>
+        <div class="career-info">
+          <div class="career-name">${r.name} <span class="lvl-tag">Nv.${li.level}</span></div>
+          <div class="career-sub">${li.into}/${li.need} XP vers le niveau ${li.level+1}</div>
+        </div>
+        <div class="career-xpnum"><b class="mono">${S.xp}</b><span>XP total</span></div>
+      </div>
+      <div class="pbar"><div style="width:${pct}%"></div></div>
+      <div class="pbar-tx"><span>${r.name}</span>${nx?`<span><b>${nx.min-S.xp} XP</b> → ${nx.icon} ${nx.name}</span>`:'<span style="color:var(--gold)">🏆 Grade maximum</span>'}</div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-t">📈 Vue d’ensemble</div>
+      <div class="stgrid">
+        <div class="stcard"><b>${S.total}</b><span>questions</span></div>
+        <div class="stcard"><b class="g">${acc}%</b><span>précision</span></div>
+        <div class="stcard"><b class="y">🔥${S.bestStreak}</b><span>record série</span></div>
+        <div class="stcard"><b class="b">${avg}</b><span>tps moyen</span></div>
+        <div class="stcard"><b class="p">${S.streakDays||0}j</b><span>assiduité</span></div>
+        <div class="stcard"><b>${S.errors.length}</b><span>à réviser</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-t">📅 Activité · 7 jours</div>
+      <div class="spark">
+        ${days.map(d=>`<div><div class="bar" style="height:${Math.max(3,d.n/mx*44)}px"></div><div class="dl">${d.l}</div></div>`).join('')}
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-t">🎯 Précision par jeu</div>
+      ${Object.keys(GAMES).filter(k=>S.byGame[k]&&S.byGame[k].t).map(k=>{
+        const st=S.byGame[k],a=Math.round(st.c/st.t*100);
+        const c=a>=80?'var(--accent)':a>=60?'var(--gold)':'var(--red)';
+        return `<div class="perf">
+          <div class="perf-h"><span class="nm">${GAMES[k].icon} ${GAMES[k].name}</span><span class="vl">${a}% (${st.c}/${st.t})</span></div>
+          <div class="perf-b"><div style="width:${a}%;background:${c}"></div></div>
+        </div>`;
+      }).join('')||'<div style="font-size:12px;color:var(--muted)">Joue une première session pour voir tes stats.</div>'}
+    </div>
+
+    ${S.sessions.length?`<div class="panel">
+      <div class="panel-t">🕐 Dernières sessions</div>
+      ${S.sessions.slice(0,8).map(s=>{
+        const g=GAMES[s.g]||GAMES.mix;
+        return `<div class="sess">
+          <div class="l"><span class="ic">${s.rev?'🔄':g.icon}</span><span>${s.rev?'Révision':g.name}<span class="m"> · ${MODES[s.m]?MODES[s.m].label:s.m} ${DIFFS[s.df]?DIFFS[s.df].label:''} · ${fmtDate(s.d)}</span></span></div>
+          <div class="r"><b>${s.ok}✓</b> ${s.err}✗ · +${s.xp}xp</div>
+        </div>`;
+      }).join('')}
+    </div>`:''}
+
+    <button class="btn btn-s btn-w" onclick="UI.resetAll()">🗑️ Réinitialiser les données</button>
+  </div>`;
+}
+
+/* ---------- réglages ---------- */
+function openSettings(){
+  $('modal').innerHTML=`<div class="mwrap" onclick="if(event.target===this)UI.closeModal()">
+    <div class="modal">
+      <h3>⚙️ Réglages</h3>
+      <div class="mrow"><div><div class="t">Sons</div><div class="d">Effets sonores de jeu</div></div>
+        <div class="tgl ${S.settings.sound?'on':''}" onclick="UI.toggle('sound')"></div></div>
+      <div class="mrow"><div><div class="t">Vibrations</div><div class="d">Retour haptique (mobile)</div></div>
+        <div class="tgl ${S.settings.vibe?'on':''}" onclick="UI.toggle('vibe')"></div></div>
+      <div class="mrow"><div><div class="t">Données</div><div class="d">Stockées localement sur cet appareil</div></div>
+        <button class="btn btn-s" style="padding:9px 14px;font-size:12px" onclick="UI.resetAll()">Réinitialiser</button></div>
+      <button class="btn btn-p btn-w" style="margin-top:14px" onclick="UI.closeModal()">Fermer</button>
+    </div>
+  </div>`;
+}
+
+/* expose pour onclick inline */
+window.UI=UI;window.endSession=endSession;
+
+render('home');
+</script>
+</body>
+</html>

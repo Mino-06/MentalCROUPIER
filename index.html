@@ -328,36 +328,73 @@ const BLIND=[{n:'Quinte Flush Royale',r:500},{n:'Quinte Flush',r:50},{n:'Carré'
    (un croupier expert paie aussi des coups simples) */
 const effL=L=>(L>1&&Math.random()<0.25)?L-1:L;
 
+/* --- Figures de paiement (picture bets) ---
+   Un numéro plein appartient à : 1 plein, jusqu’à 4 chevaux, 1 transversale,
+   jusqu’à 4 carrés, 2 sixains. Les pièces peuvent être empilées. */
+const INSIDE=[{n:'plein',r:35,max:4},{n:'cheval',r:17,max:6},{n:'transversale',r:11,max:3},{n:'carré',r:8,max:4},{n:'sixain',r:5,max:3}];
+const FIGURES=[
+  {n:'Plein + cheval',parts:[[1,35],[1,17]]},
+  {n:'Plein + 2 chevaux',parts:[[1,35],[2,17]]},
+  {n:'Carré + cheval',parts:[[1,8],[1,17]]},
+  {n:'2 carrés',parts:[[2,8]]},
+  {n:'Transversale + plein',parts:[[1,11],[1,35]]},
+  {n:'Numéro et les chevaux',parts:[[1,35],[4,17]]},
+  {n:'Complet (plein + chevaux + carrés)',parts:[[1,35],[4,17],[4,8]]}
+];
+const figVal=f=>sum(f.parts.map(p=>p[0]*p[1]));
+const PLU={cheval:'chevaux'};
+const plu=(c,n)=>c>1?(PLU[n]||n+'s'):n;
+const mkPicture=(nTypes,maxP)=>pickN(INSIDE,nTypes).map(t=>[rnd(1,Math.min(t.max,maxP)),t.r,t.n]).sort((a,b)=>b[1]-a[1]);
+const pictureQ=(parts,denom)=>{
+  const pieces=sum(parts.map(p=>p[0]*p[1]));
+  const txt=parts.map(p=>`${p[0]} ${plu(p[0],p[2])}`).join(' + ');
+  const rates=parts.map(p=>`${p[2]} = ${p[1]}`).join(' · ');
+  if(denom)return {game:'roulette',ctx:`Figure · pièces de ${denom}`,q:txt,ans:pieces*denom,hint:`${rates} → total × ${denom}`,parts,denom};
+  return {game:'roulette',ctx:'Figure · paiement en pièces',q:txt,ans:pieces,hint:rates,parts};
+};
+
 function genRoulette(d){
   const L=effL(LVL[d]),B=DIFFS[d].bets,bet=()=>pick(B);
+  // pondération réaliste : pleins et chevaux tombent bien plus souvent en salle
+  const wp=()=>ROUL[pick([0,0,0,1,1,1,2,3,4,5,6])];
   if(L===1){
-    const p=pick(ROUL),b=bet();
+    const p=wp(),b=bet();
     return {game:'roulette',ctx:'Paiement · '+p.n,q:`${b} × ${p.r}`,ans:b*p.r,hint:`${p.n} = ${p.r} pour 1`};
   }
   if(L===2){
-    if(coin()){const p=pick(ROUL),b=bet();
+    const t=pick(['mc','fig','two']);
+    if(t==='mc'){const p=wp(),b=bet();
       return {game:'roulette',ctx:'Mise comprise · '+p.n,q:`${b} × ${p.r+1}`,ans:b*(p.r+1),hint:'Gain + mise rendue'};}
+    if(t==='fig')return pictureQ(mkPicture(2,2));
     const [p1,p2]=pick2(ROUL),b1=bet(),b2=bet();
     return {game:'roulette',ctx:'2 paris gagnants',q:`(${b1}×${p1.r}) + (${b2}×${p2.r})`,ans:b1*p1.r+b2*p2.r,hint:`${p1.n} + ${p2.n}`};
   }
   if(L===3){
-    if(coin()){const [p1,p2]=pick2(ROUL.slice(0,5)),n1=rnd(2,5),n2=rnd(2,5);
-      return {game:'roulette',ctx:'Annonce en pièces',q:`${n1} ${p1.n} + ${n2} ${p2.n}`,ans:n1*p1.r+n2*p2.r,hint:`${p1.n}=${p1.r} · ${p2.n}=${p2.r}`};}
+    const t=pick(['pic','pic','ann','three']);
+    if(t==='pic')return pictureQ(mkPicture(rnd(2,3),4));
+    if(t==='ann'){const a=pick(ANNONCES),k=rnd(2,6);
+      return {game:'roulette',ctx:'Annonce · mise totale',q:`${a.n} par ${k}`,ans:a.p*k,hint:`${a.n} = ${a.p} pièces`,parts:[[k,a.p,a.n]]};}
     const ps=pickN(ROUL,3),bs=ps.map(()=>bet());
     return {game:'roulette',ctx:'3 paris gagnants',q:bs.map((b,i)=>`(${b}×${ps[i].r})`).join(' + '),ans:sum(bs.map((b,i)=>b*ps[i].r)),hint:ps.map(p=>p.n).join(' + ')};
   }
   if(L===4){
-    if(coin()){const a=pick(ANNONCES),k=rnd(2,5),v=pick([5,10,25]);
-      return {game:'roulette',ctx:'Annonce · '+a.n,q:`${k} × ${a.p} pièces de ${v}`,ans:a.p*k*v,hint:`${a.n} = ${a.p} pièces · mise totale ?`};}
+    const t=pick(['fig','picd','annd','threeMC']);
+    if(t==='fig'){const f=pick(FIGURES),k=rnd(1,4);
+      return {game:'roulette',ctx:'Figure classique'+(k>1?' · empilée':''),q:k>1?`${f.n} × ${k}`:f.n,ans:figVal(f)*k,
+        hint:f.parts.map(p=>`${p[0]}×${p[1]}`).join(' + ')+(k>1?` , le tout × ${k}`:''),parts:f.parts.map(p=>[p[0]*k,p[1]])};}
+    if(t==='picd')return pictureQ(mkPicture(2,4),pick([5,10,25]));
+    if(t==='annd'){const a=pick(ANNONCES),k=rnd(2,5),v=pick([5,10,25]);
+      return {game:'roulette',ctx:'Annonce · '+a.n,q:`${a.n} par ${k} pièces de ${v}`,ans:a.p*k*v,hint:`${a.n} = ${a.p} pièces → en espèces ?`,parts:[[k,a.p]],denom:v};}
     const ps=pickN(ROUL,3),bs=ps.map(()=>bet());
     return {game:'roulette',ctx:'3 paris · mises comprises',q:bs.map((b,i)=>`(${b}×${ps[i].r+1})`).join(' + '),ans:sum(bs.map((b,i)=>b*(ps[i].r+1))),hint:ps.map(p=>p.n).join(' + ')};
   }
-  if(coin()){
-    const ps=pickN(ROUL,4),bs=ps.map(()=>bet());
-    return {game:'roulette',ctx:'Rush · 4 paris',q:bs.map((b,i)=>`(${b}×${ps[i].r})`).join(' + '),ans:sum(bs.map((b,i)=>b*ps[i].r)),hint:ps.map(p=>p.n).join(' + ')};
-  }
-  const ps=pickN(ROUL.slice(0,5),3),ns=ps.map(()=>rnd(2,6));
-  return {game:'roulette',ctx:'Annonce en pièces',q:ns.map((n,i)=>`${n} ${ps[i].n}`).join(' + '),ans:sum(ns.map((n,i)=>n*ps[i].r)),hint:ps.map(p=>`${p.n}=${p.r}`).join(' · ')};
+  const t=pick(['rush','picBig','figd']);
+  if(t==='picBig')return pictureQ(mkPicture(rnd(3,4),6));
+  if(t==='figd'){const f=pick(FIGURES.slice(4)),k=rnd(2,4),v=pick([5,10,25]);
+    return {game:'roulette',ctx:`Figure · pièces de ${v}`,q:`${f.n} × ${k}`,ans:figVal(f)*k*v,
+      hint:`${f.n} = ${figVal(f)} pièces → × ${k} × ${v}`,parts:f.parts.map(p=>[p[0]*k,p[1]]),denom:v};}
+  const ps=pickN(ROUL,4),bs=ps.map(()=>bet());
+  return {game:'roulette',ctx:'Rush · 4 paris',q:bs.map((b,i)=>`(${b}×${ps[i].r})`).join(' + '),ans:sum(bs.map((b,i)=>b*ps[i].r)),hint:ps.map(p=>p.n).join(' + ')};
 }
 
 function genBlackjack(d){
@@ -365,8 +402,11 @@ function genBlackjack(d){
   const evens=B.filter(b=>b%2===0);
   const evenBet=()=>pick(evens.length?evens:[10,20,50,100]);
   if(L===1){
-    if(coin()){const cards=Array.from({length:rnd(2,3)},()=>rnd(2,11));
+    const t=pick(['count','bj','pay']);
+    if(t==='count'){const cards=Array.from({length:rnd(2,3)},()=>rnd(2,11));
       return {game:'blackjack',ctx:'Comptage de main',q:cards.join(' + '),ans:sum(cards),hint:`${cards.length} cartes`};}
+    if(t==='bj'){const b=evenBet();
+      return {game:'blackjack',ctx:'Blackjack · 3:2',q:`${b} × 1.5`,ans:b*1.5,hint:'La mise + sa moitié'};}
     const b=bet();
     return {game:'blackjack',ctx:'Box gagnante · 1:1',q:`${b} × 1`,ans:b,hint:'Payé une fois la mise'};
   }
@@ -457,21 +497,31 @@ function genTexas(d){
     return {game:'texas',ctx:'Calcul du pot',q:a.join(' + '),ans:sum(a),hint:'4 joueurs misent'};
   }
   if(L===3){
-    if(coin()){const p=pick(pots20);
+    const t=pick(['rake','raise','sideM','sideE']);
+    if(t==='rake'){const p=pick(pots20);
       return {game:'texas',ctx:'Rake · 5%',q:`5% de ${p}`,ans:round2(p*0.05),hint:'Prélèvement maison'};}
-    const b=bet(),n=rnd(2,4),extra=bet();
-    return {game:'texas',ctx:'Pot + relance',q:`(${b}×${n}) + ${extra}`,ans:b*n+extra,hint:`${n} calls + 1 relance`};
+    if(t==='raise'){const b=bet(),n=rnd(2,4),extra=bet();
+      return {game:'texas',ctx:'Pot + relance',q:`(${b}×${n}) + ${extra}`,ans:b*n+extra,hint:`${n} calls + 1 relance`};}
+    const a=pick([20,25,30,40,50,60,75,100]),top=a+pick([20,25,40,50,75,100]),k=rnd(2,3);
+    if(t==='sideM')
+      return {game:'texas',ctx:'All-in · pot principal',q:`${a} × ${k+1}`,ans:a*(k+1),hint:`All-in à ${a}, suivi par ${k} joueurs → le principal prend ${a} de chacun`};
+    return {game:'texas',ctx:'Pot extérieur (side pot)',q:`(${top} − ${a}) × ${k}`,ans:(top-a)*k,hint:`All-in à ${a} · ${k} joueurs misent ${top} → l’excédent va au pot extérieur`};
   }
   if(L===4){
-    if(coin()){const main=pick([150,200,250,300,350,400,450,500]),s=bet(),k=rnd(2,3);
+    const t=pick(['side','sideFull','rake']);
+    if(t==='side'){const main=pick([150,200,250,300,350,400,450,500]),s=bet(),k=rnd(2,3);
       return {game:'texas',ctx:'Pot principal + side pot',q:`${main} + (${s}×${k})`,ans:main+s*k,hint:`Side pot : ${k} joueurs`};}
+    if(t==='sideFull'){const a=pick([25,40,50,60,75,100]),top=a+pick([25,50,75,100]),k=rnd(2,3);
+      return {game:'texas',ctx:'All-in · principal + extérieur',q:`(${a}×${k+1}) + ((${top}−${a})×${k})`,ans:a*(k+1)+(top-a)*k,hint:`All-in ${a} · ${k} joueurs à ${top}`};}
     const p=pick(pots20);
     return {game:'texas',ctx:'Rake · 5%',q:`5% de ${p}`,ans:round2(p*0.05),hint:'Prélèvement maison'};
   }
-  if(coin()){
-    const main=pick([400,500,600]),s1=bet()*rnd(2,3),s2=bet()*rnd(2,3);
-    return {game:'texas',ctx:'Multi-pots',q:`${main} + ${s1} + ${s2}`,ans:main+s1+s2,hint:'Principal + 2 side pots'};
-  }
+  const t=pick(['multi','net','doubleAllin']);
+  if(t==='multi'){const main=pick([400,500,600]),s1=bet()*rnd(2,3),s2=bet()*rnd(2,3);
+    return {game:'texas',ctx:'Multi-pots',q:`${main} + ${s1} + ${s2}`,ans:main+s1+s2,hint:'Principal + 2 side pots'};}
+  if(t==='doubleAllin'){const a1=pick([20,25,30,40,50]),a2=a1+pick([20,25,50]),top=a2+pick([25,50,75]);
+    return {game:'texas',ctx:'Double all-in · 3 pots',q:`(${a1}×3) + ((${a2}−${a1})×2) + (${top}−${a2})`,
+      ans:a1*3+(a2-a1)*2+(top-a2),hint:`All-ins à ${a1} et ${a2}, 3e joueur couvre à ${top}`};}
   const p=pick(pots20);
   return {game:'texas',ctx:'Pot net après rake 5%',q:`${p} − 5%`,ans:round2(p*0.95),hint:`Rake = ${fmtN(p*0.05)}`};
 }

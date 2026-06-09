@@ -8,10 +8,10 @@ Application d'entraînement au **calcul mental pour croupiers** — un seul fich
 
 | Jeu | Contenu |
 |---|---|
-| 🎡 Roulette | Paiements (plein 35, cheval 17…), mises comprises, **annonces en pièces**, tiers/orphelins/voisins |
-| 🃏 Blackjack | 3:2, assurance (coût & paiement 2:1), comptage de mains, multi-boxes, **Perfect Pairs** |
+| 🎡 Roulette | Paiements (plein 35, cheval 17…), mises comprises, **figures / picture bets** (Plein+cheval 52, Numéro et les chevaux 103, Complet 135…), annonces (tiers, orphelins, voisins), conversion pièces → espèces |
+| 🃏 Blackjack | **Paiement Blackjack 3:2 (×1,5) à tous les niveaux**, assurance (coût & paiement 2:1), comptage de mains, multi-boxes, **Perfect Pairs** |
 | 🀄 Baccarat | Joueur 1:1, **commission banque 5%**, égalité 8:1, paires 11:1 |
-| ♠️ Texas Hold'em | Pots, side pots, **rake 5%** |
+| ♠️ Texas Hold'em | Pots, **pots extérieurs (all-in : principal + side pots, double all-in à 3 pots)**, rake 5% |
 | 👑 Ultimate | Ante/Blind/Play, barème **Trips** et **Blind**, gains complets |
 | 🪙 Jetons | Stacks, change, échanges, rendus |
 | ✖️ Tables | Multiplications ciblées croupier (5 · 8 · 11 · 17 · 35) |

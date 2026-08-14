@@ -49,7 +49,7 @@ button{font-family:inherit;color:inherit}
 .fadeUp{animation:fadeUp .35s ease-out both}
 /* ---------- header ---------- */
 .hdr{display:flex;justify-content:space-between;align-items:center;padding:6px 0 16px;gap:8px;min-width:0}
-.logo{display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;flex:1 1 auto;overflow:hidden}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;flex:1 1 auto;overflow:hidden;min-height:44px}
 .logo>div{min-width:0}
 .logo-tx,.logo-sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .logo-ic{flex:0 0 auto}
@@ -59,11 +59,11 @@ button{font-family:inherit;color:inherit}
 .logo-tx b{background:linear-gradient(120deg,#34d399,var(--gold));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 .logo-sub{font-size:9px;color:var(--muted);letter-spacing:1.6px;text-transform:uppercase;margin-top:-2px}
 .hdr-r{display:flex;align-items:center;gap:7px;flex:0 0 auto}
-.chip-btn{display:flex;align-items:center;gap:7px;padding:7px 11px;background:var(--card);border:1px solid var(--border);border-radius:11px;cursor:pointer;transition:border-color .15s;font-size:12px;font-weight:700}
+.chip-btn{display:flex;align-items:center;gap:7px;padding:7px 11px;min-height:44px;background:var(--card);border:1px solid var(--border);border-radius:11px;cursor:pointer;transition:border-color .15s;font-size:12px;font-weight:700}
 .chip-btn:active{transform:scale(.96)}
 .chip-btn .ico{font-size:15px}
 .chip-fire{color:var(--gold);border-color:rgba(245,196,81,.35);background:linear-gradient(135deg,rgba(245,196,81,.12),transparent)}
-.gear{width:38px;height:38px;display:grid;place-items:center;background:var(--card);border:1px solid var(--border);border-radius:11px;cursor:pointer;font-size:16px}
+.gear{width:44px;height:44px;display:grid;place-items:center;flex:0 0 auto;background:var(--card);border:1px solid var(--border);border-radius:11px;cursor:pointer;font-size:16px}
 .gear:active{transform:scale(.94)}
 /* ---------- carrière ---------- */
 .career{background:linear-gradient(150deg,var(--card),#101720 75%);border:1px solid var(--border);border-radius:var(--rad);padding:18px;margin-bottom:14px;position:relative;overflow:hidden}
@@ -86,7 +86,7 @@ button{font-family:inherit;color:inherit}
 .sect-t{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1.4px;margin:18px 2px 10px;display:flex;align-items:center;justify-content:space-between}
 .sect-t .aux{font-size:10px;letter-spacing:0;text-transform:none;color:var(--text2);font-weight:600}
 .daily{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.dch{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:11px 8px 9px;text-align:center;cursor:pointer;position:relative;transition:transform .15s,border-color .15s}
+.dch{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:11px 8px 9px;min-height:96px;text-align:center;cursor:pointer;position:relative;transition:transform .15s,border-color .15s}
 .dch:active{transform:scale(.95)}
 .dch.done{border-color:rgba(16,185,129,.5);background:linear-gradient(160deg,rgba(16,185,129,.13),transparent)}
 .dch.done::after{content:'✓';position:absolute;top:-6px;right:-5px;width:18px;height:18px;background:var(--accent);border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:800;color:#04140d}
@@ -124,7 +124,7 @@ button{font-family:inherit;color:inherit}
 .panel{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:15px;margin-bottom:12px}
 .panel-t{font-size:10.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:11px}
 .seg{display:flex;gap:6px;flex-wrap:wrap}
-.seg button{flex:1;min-width:58px;padding:11px 6px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;font-size:11.5px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center}
+.seg button{flex:1;min-width:58px;padding:11px 6px;min-height:46px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;font-size:11.5px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center}
 .seg button .s{display:block;font-size:8.5px;color:var(--muted);font-weight:600;margin-top:1px}
 .seg button.on{background:var(--accent);border-color:var(--accent);color:#04140d}
 .seg button.on .s{color:rgba(4,20,13,.7)}
@@ -134,7 +134,7 @@ button{font-family:inherit;color:inherit}
 .infrow b{display:block;font-size:13px;margin-top:2px;font-family:'JetBrains Mono',monospace}
 .infrow b.g{color:var(--gold)}
 .tgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
-.tbtn{padding:13px 4px;background:var(--bg2);border:1px solid var(--border);border-radius:11px;cursor:pointer;text-align:center;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;transition:all .15s}
+.tbtn{padding:13px 4px;min-height:46px;background:var(--bg2);border:1px solid var(--border);border-radius:11px;cursor:pointer;text-align:center;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:800;transition:all .15s}
 .tbtn:active{transform:scale(.93)}
 .tbtn.ess{color:var(--gold);border-color:rgba(245,196,81,.3)}
 .tbtn.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
@@ -264,7 +264,7 @@ button{font-family:inherit;color:inherit}
 .nlist{display:flex;flex-wrap:wrap;gap:5px;justify-content:center;margin:10px 0 14px}
 .nlist .wn{width:28px;height:28px;font-size:12px}
 .numgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:6px}
-.ng{padding:9px 0;border-radius:9px;border:1px solid var(--border);background:var(--bg2);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;cursor:pointer}
+.ng{padding:9px 0;min-height:44px;border-radius:9px;border:1px solid var(--border);background:var(--bg2);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;cursor:pointer}
 .ng.r{border-color:rgba(231,92,92,.35)}.ng.z{border-color:rgba(16,185,129,.4)}
 .ng.on{background:var(--accent);border-color:var(--accent);color:#04140d}
 .ng:active{transform:scale(.92)}
@@ -296,8 +296,37 @@ button{font-family:inherit;color:inherit}
 .choices.locked .ch.bad{opacity:1;background:rgba(240,100,100,.15);border-color:var(--red);color:var(--red)}
 .tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto;padding-bottom:3px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
-.tabs button{flex:0 0 auto;padding:9px 13px;border-radius:10px;border:1px solid var(--border);background:var(--card);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.tabs button{flex:0 0 auto;padding:11px 14px;min-height:44px;border-radius:10px;border:1px solid var(--border);background:var(--card);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
 .tabs button.on{background:var(--accent);border-color:var(--accent);color:#04140d}
+
+/* ---------- réglages, séquences, jetons ---------- */
+.gcard.span2{grid-column:span 2}
+.optgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:7px}
+.opt{display:flex;flex-direction:column;align-items:center;gap:2px;padding:11px 6px;border-radius:11px;border:1px solid var(--border);background:var(--bg2);cursor:pointer;min-height:64px;justify-content:center}
+.opt .oi{font-size:17px}
+.opt .on2{font-size:11.5px;font-weight:700}
+.opt .ov{font-size:9.5px;color:var(--muted);font-weight:600}
+.opt.on{background:var(--accent-soft);border-color:var(--accent)}
+.opt.on .ov{color:var(--accent)}
+.opt:active{transform:scale(.95)}
+.cdot{width:17px;height:17px;border-radius:50%;border:2px dashed rgba(255,255,255,.55);display:block}
+.qk{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
+.qk button{flex:1;min-width:88px;min-height:44px;padding:9px 8px;border-radius:9px;border:1px solid var(--border);background:var(--bg2);font-size:11px;font-weight:700;cursor:pointer;color:var(--text2)}
+.qk button:active{transform:scale(.96)}
+.seqwrap{margin:14px 0 4px}
+.seqbox{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.sq{min-width:36px;height:38px;padding:0 6px;border-radius:9px;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:800;background:var(--bg2);border:1px solid var(--border);color:var(--muted)}
+.sq.given{background:rgba(94,170,247,.16);border-color:rgba(94,170,247,.5);color:var(--blue)}
+.sq.cur{border-color:var(--accent);background:rgba(16,185,129,.1);color:var(--accent);box-shadow:0 0 0 3px rgba(16,185,129,.12)}
+.sq.ok{background:rgba(16,185,129,.18);border-color:var(--accent);color:#3ddfa4}
+.sq.ko{background:rgba(240,100,100,.15);border-color:var(--red);color:var(--red)}
+.seqcount{text-align:center;font-size:10.5px;color:var(--muted);margin-top:8px}
+.chipsrow{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin:14px 0 4px;align-items:flex-end}
+.cstack{display:flex;flex-direction:column;align-items:center;gap:6px}
+.cst{position:relative;width:34px;height:48px}
+.cdisc{position:absolute;left:0;width:34px;height:11px;border-radius:50%;border:1px solid rgba(0,0,0,.35);box-shadow:0 1px 2px rgba(0,0,0,.4)}
+.clab{font-size:10.5px;color:var(--text2);font-family:'JetBrains Mono',monospace}
+.clab b{color:var(--text)}
 
 /* ---------- durcissement mobile ---------- */
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
@@ -314,8 +343,8 @@ button,.sect-t,.panel-t,.gstat,.qbadge,.kpad,.tabs,.lrow span{-webkit-user-selec
   .logo-ic{width:34px;height:34px;font-size:17px;border-radius:10px}
   .logo-tx{font-size:14px}
   .logo-sub{display:none}
-  .chip-btn{padding:7px 8px;font-size:11px;gap:5px}
-  .gear{width:34px;height:34px;font-size:14px}
+  .chip-btn{padding:7px 8px;font-size:11px;gap:5px;min-height:44px}
+  .gear{width:44px;height:44px;font-size:15px}
   .hdr{gap:6px;padding-bottom:12px}
 }
 @media(max-width:400px){
@@ -375,18 +404,27 @@ const fmtClock=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0'
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 /* ---------- config jeux & difficultés ---------- */
+const CATS={
+  roulette:'🎡 Roulette',
+  cartes:'🃏 Tables de jeu',
+  caisse:'🪙 Caisse & calcul',
+  mix:'🎰 Tout mélangé'
+};
 const GAMES={
-  roulette:{name:'Roulette',icon:'🎡',color:'var(--c-roulette)',suit:'♦',desc:'Paiements, mises comprises, figures'},
-  combos:{name:'Combinaisons',icon:'🧮',color:'var(--c-combos)',suit:'♦',desc:'Pleins, chevaux, carrés : additions de paiement'},
-  cylindre:{name:'Cylindre',icon:'🎯',color:'var(--c-cylindre)',suit:'♦',desc:'Voisins d’un numéro sur la roue'},
-  annonces:{name:'Annonces',icon:'📣',color:'var(--c-annonces)',suit:'♦',desc:'Tiers, Orphelins, Voisins du zéro…'},
-  blackjack:{name:'Blackjack',icon:'🃏',color:'var(--c-blackjack)',suit:'♠',desc:'3:2, assurance, comptage, side bets'},
-  baccarat:{name:'Baccarat',icon:'🀄',color:'var(--c-baccarat)',suit:'♥',desc:'Commission 5%, égalité 8:1, paires'},
-  texas:{name:'Texas Hold’em',icon:'♠️',color:'var(--c-texas)',suit:'♣',desc:'Pots, side pots, rake 5%'},
-  ultimate:{name:'Ultimate',icon:'👑',color:'var(--c-ultimate)',suit:'♠',desc:'Ante, Play, Blind, Trips'},
-  chips:{name:'Jetons',icon:'🪙',color:'var(--c-chips)',suit:'♦',desc:'Stacks, change, échanges'},
-  tables:{name:'Tables ×',icon:'✖️',color:'var(--c-tables)',suit:'♣',desc:'Tables 1 à 20 + table de 1,5'},
-  mix:{name:'Mix Casino',icon:'🎰',color:'var(--c-mix)',suit:'♥',desc:'Tous les jeux mélangés'}
+  paiements:{name:'Paiements',icon:'💰',color:'var(--c-roulette)',suit:'♦',cat:'roulette',desc:'Plein, cheval, carré… réglables',opts:'bets'},
+  combos:{name:'Combinaisons',icon:'🧮',color:'var(--c-combos)',suit:'♦',cat:'roulette',desc:'Picture bets : additions de paiement',opts:'bets'},
+  voisins:{name:'Voisins',icon:'🧭',color:'var(--c-cylindre)',suit:'♦',cat:'roulette',desc:'Cite un numéro et ses voisins',seq:true},
+  wheelfill:{name:'Remplir le cylindre',icon:'🧠',color:'var(--c-cylindre)',suit:'♦',cat:'roulette',desc:'Reconstituer la roue de tête',seq:true},
+  cylindre:{name:'Calculs cylindre',icon:'🎯',color:'var(--c-cylindre)',suit:'♦',cat:'roulette',desc:'Voisin, opposé, mise, paiement'},
+  annonces:{name:'Annonces',icon:'📣',color:'var(--c-annonces)',suit:'♦',cat:'roulette',desc:'Tiers, Orphelins, Voisins du zéro'},
+  roulette:{name:'Roulette complète',icon:'🎡',color:'var(--c-roulette)',suit:'♦',cat:'roulette',desc:'Tout le jeu mélangé'},
+  blackjack:{name:'Blackjack',icon:'🃏',color:'var(--c-blackjack)',suit:'♠',cat:'cartes',desc:'3:2, assurance, comptage, side bets'},
+  baccarat:{name:'Baccarat',icon:'🀄',color:'var(--c-baccarat)',suit:'♥',cat:'cartes',desc:'Commission 5%, égalité 8:1, paires'},
+  texas:{name:'Texas Hold’em',icon:'♠️',color:'var(--c-texas)',suit:'♣',cat:'cartes',desc:'Pots, side pots, rake 5%'},
+  ultimate:{name:'Ultimate',icon:'👑',color:'var(--c-ultimate)',suit:'♠',cat:'cartes',desc:'Ante, Play, Blind, Trips'},
+  chips:{name:'Change & jetons',icon:'🪙',color:'var(--c-chips)',suit:'♦',cat:'caisse',desc:'Euros ↔ jetons, valeurs réglables',opts:'chips'},
+  tables:{name:'Tables ×',icon:'✖️',color:'var(--c-tables)',suit:'♣',cat:'caisse',desc:'Tables 1 à 20 + table de 1,5',opts:'tables'},
+  mix:{name:'Mix Casino',icon:'🎰',color:'var(--c-mix)',suit:'♥',cat:'mix',desc:'Tous les exercices mélangés',opts:'tables'}
 };
 const DIFFS={
   facile:{label:'Facile',time:25,xp:1,bets:[5,10,25,50,100],tmax:10},
@@ -410,6 +448,21 @@ const MODES={
 /* ---------- barèmes croupier ---------- */
 /*GEN-START*/
 const ROUL=[{n:'Plein',r:35},{n:'Cheval',r:17},{n:'Transversale',r:11},{n:'Carré',r:8},{n:'Sixain',r:5},{n:'Douzaine',r:2},{n:'Chance simple',r:1}];
+/* types de paris activables dans les réglages du jeu Paiements */
+const BET_TYPES=[
+  {id:'plein',n:'Plein',r:35,ic:'🎯'},{id:'cheval',n:'Cheval',r:17,ic:'🐴'},
+  {id:'transv',n:'Transversale',r:11,ic:'➖'},{id:'carre',n:'Carré',r:8,ic:'⬛'},
+  {id:'sixain',n:'Sixain',r:5,ic:'🔢'},{id:'douzaine',n:'Douzaine',r:2,ic:'📊'},
+  {id:'simple',n:'Chance simple',r:1,ic:'🔴'}
+];
+const DEF_BETS=['plein','cheval','transv','carre','sixain'];
+/* valeurs de jetons — couleurs usuelles des casinos européens */
+const CHIP_VALS=[
+  {v:1,n:'Blanc',c:'#e8eaed'},{v:2,n:'Rose',c:'#f9a8d4'},{v:5,n:'Rouge',c:'#e75c5c'},
+  {v:10,n:'Bleu',c:'#5eaaf7'},{v:20,n:'Jaune',c:'#f5c451'},{v:25,n:'Vert',c:'#34d399'},
+  {v:50,n:'Orange',c:'#fb923c'},{v:100,n:'Noir',c:'#4b5563'},{v:500,n:'Violet',c:'#a78bfa'}
+];
+const DEF_CHIPS=[5,10,20,50,100];
 /* ---- Cylindre européen : ordre réel des 37 cases (sens horaire depuis le 0) ---- */
 const WHEEL=[0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26];
 const RED=[1,3,5,7,9,12,14,16,18,19,21,23,25,27,30,32,34,36];
@@ -697,36 +750,95 @@ function genUltimate(d){
   return {game:'ultimate',ctx:'Play + Trips',q:`(${a}×${m}) + (${s}×${t.r})`,ans:a*m+s*t.r,hint:`Play ${m}x + Trips ${t.n}`};
 }
 
-function genChips(d){
-  const L=effL(LVL[d]),B=DIFFS[d].bets;
+/* ---------------- CHANGE & JETONS (valeurs réglables) ---------------- */
+const chipInfo=v=>CHIP_VALS.find(c=>c.v===v)||{v,n:'Jeton',c:'#9aa3af'};
+function activeChips(opts){
+  const vals=(opts&&opts.chips&&opts.chips.length)?[...opts.chips]:[...DEF_CHIPS];
+  return vals.filter(v=>v>0).sort((a,b)=>a-b);
+}
+/* décomposition au moins de jetons possible, dans les valeurs disponibles */
+function greedyChips(amount,vals){
+  const out=[];let r=amount;
+  for(const v of [...vals].sort((a,b)=>b-a)){
+    const n=Math.floor(r/v);
+    if(n>0){out.push({v,n});r-=n*v;}
+  }
+  return {parts:out,rest:r,count:sum(out.map(o=>o.n))};
+}
+function genChips(d,opts){
+  const L=effL(LVL[d]);
+  const V=activeChips(opts);
+  const v=()=>pick(V);
+  const big=V[V.length-1],small=V[0];
   if(L===1){
-    const v=pick([5,10,25,50,100]),n=rnd(4,12);
-    return {game:'chips',ctx:'Conversion',q:`${n} × ${v}`,ans:n*v,hint:`${n} jetons de ${v}`};
+    if(coin()){const c=v(),n=rnd(3,12);
+      return {game:'chips',ctx:'Valeur d’une pile',q:`${n} jetons de ${c}`,ans:n*c,
+        hint:`${n} × ${c}`,chipsView:[{v:c,n}]};}
+    const c=v(),n=rnd(3,15);
+    return {game:'chips',ctx:'Change · euros → jetons',q:`${n*c} € en jetons de ${c}`,ans:n,
+      hint:`${n*c} ÷ ${c}`,chipsView:[{v:c,n:Math.min(n,12)}]};
   }
   if(L===2){
-    const c1={v:pick([5,10,25]),n:rnd(2,6)},c2={v:pick([50,100]),n:rnd(1,4)};
-    return {game:'chips',ctx:'Comptage de stack',q:`(${c1.n}×${c1.v}) + (${c2.n}×${c2.v})`,ans:c1.n*c1.v+c2.n*c2.v,hint:'2 piles de jetons'};
+    const t=pick(['toChips','toEuro','two']);
+    if(t==='toChips'){const c=v(),n=rnd(4,20);
+      return {game:'chips',ctx:'Change · euros → jetons',q:`${n*c} € en jetons de ${c}`,ans:n,
+        hint:`Combien de jetons ${chipInfo(c).n.toLowerCase()}s ?`,chipsView:[{v:c,n:Math.min(n,12)}]};}
+    if(t==='toEuro'){const c=v(),n=rnd(4,20);
+      return {game:'chips',ctx:'Valeur d’une pile',q:`${n} jetons de ${c}`,ans:n*c,hint:`${n} × ${c}`,chipsView:[{v:c,n:Math.min(n,12)}]};}
+    const a={v:v(),n:rnd(2,8)},b={v:v(),n:rnd(2,6)};
+    return {game:'chips',ctx:'Comptage de tapis',q:`(${a.n}×${a.v}) + (${b.n}×${b.v})`,ans:a.n*a.v+b.n*b.v,
+      hint:'2 piles',chipsView:[a,b]};
   }
   if(L===3){
-    if(coin()){const v=pick([25,50,100]),k=rnd(4,15);
-      return {game:'chips',ctx:'Échange',q:`${v*k} ÷ ${v}`,ans:k,hint:'Nombre de jetons à rendre'};}
-    const c1={v:5,n:rnd(2,7)},c2={v:25,n:rnd(2,5)},c3={v:100,n:rnd(1,3)};
-    return {game:'chips',ctx:'Comptage de stack',q:`(${c1.n}×${c1.v}) + (${c2.n}×${c2.v}) + (${c3.n}×${c3.v})`,ans:c1.n*c1.v+c2.n*c2.v+c3.n*c3.v,hint:'3 piles de jetons'};
+    const t=pick(['toChips','three','swap']);
+    if(t==='toChips'){const c=v(),n=rnd(6,30);
+      return {game:'chips',ctx:'Change · euros → jetons',q:`${n*c} € en jetons de ${c}`,ans:n,
+        hint:`${n*c} ÷ ${c}`,chipsView:[{v:c,n:Math.min(n,12)}]};}
+    if(t==='swap'){
+      const others=V.length>1?V:null;   // l'échange n'a de sens qu'avec 2 valeurs différentes
+      const a=v(),n=rnd(4,20),tot=n*a;
+      const b=others?pick(others.filter(x=>x!==a)):null;
+      if(b==null||tot%b!==0)
+        return {game:'chips',ctx:'Valeur d’une pile',q:`${n} jetons de ${a}`,ans:tot,hint:`${n} × ${a}`,chipsView:[{v:a,n:Math.min(n,12)}]};
+      return {game:'chips',ctx:'Échange de jetons',q:`${n} jetons de ${a} → en jetons de ${b}`,ans:tot/b,
+        hint:`${n}×${a} = ${tot} €, puis ÷ ${b}`,chipsView:[{v:a,n:Math.min(n,10)}]};}
+    const ps=pickN(V,Math.min(3,V.length)).map(x=>({v:x,n:rnd(2,8)}));
+    return {game:'chips',ctx:'Comptage de tapis',q:ps.map(p=>`(${p.n}×${p.v})`).join(' + '),
+      ans:sum(ps.map(p=>p.n*p.v)),hint:`${ps.length} piles`,chipsView:ps};
   }
   if(L===4){
-    if(coin()){const g=pick([200,250,300,400,500]),s=5*rnd(3,Math.floor(g/5)-2);
-      return {game:'chips',ctx:'Rendu client',q:`${g} − ${s}`,ans:g-s,hint:'Monnaie à rendre'};}
-    const c1={v:1,n:rnd(5,12)},c2={v:5,n:rnd(4,10)},c3={v:25,n:rnd(2,6)},c4={v:100,n:rnd(1,3)};
-    return {game:'chips',ctx:'Stack complet',q:`(${c4.n}×100) + (${c3.n}×25) + (${c2.n}×5) + (${c1.n}×1)`,ans:c1.n+c2.n*5+c3.n*25+c4.n*100,hint:'4 dénominations'};
+    const t=pick(['rendu','minChips','toChips','stack']);
+    if(t==='rendu'){const c=v(),given=c*rnd(10,40),spent=c*rnd(2,8);
+      return {game:'chips',ctx:'Rendu client',q:`${given} € − ${spent} € à rendre en jetons de ${c}`,
+        ans:(given-spent)/c,hint:`Reste ${given-spent} €, ÷ ${c}`};}
+    if(t==='minChips'){const amt=small*rnd(6,60);
+      const g=greedyChips(amt,V);
+      if(g.rest!==0)return {game:'chips',ctx:'Change · euros → jetons',q:`${amt} € en jetons de ${small}`,ans:amt/small,hint:`${amt} ÷ ${small}`};
+      return {game:'chips',ctx:'Le moins de jetons possible',q:`${amt} € — combien de jetons au minimum ?`,
+        ans:g.count,hint:g.parts.map(p=>`${p.n}×${p.v}`).join(' + '),chipsView:g.parts};}
+    if(t==='toChips'){const c=v(),n=rnd(8,40);
+      return {game:'chips',ctx:'Change · euros → jetons',q:`${n*c} € en jetons de ${c}`,ans:n,hint:`${n*c} ÷ ${c}`};}
+    const ps=pickN(V,Math.min(4,V.length)).map(x=>({v:x,n:rnd(2,10)}));
+    return {game:'chips',ctx:'Stack complet',q:ps.map(p=>`(${p.n}×${p.v})`).join(' + '),
+      ans:sum(ps.map(p=>p.n*p.v)),hint:`${ps.length} valeurs`,chipsView:ps};
   }
-  if(coin()){
-    const target=pick([500,1000]),cur=5*rnd(20,target/5-10);
-    return {game:'chips',ctx:'Compléter le stack',q:`${target} − ${cur}`,ans:target-cur,hint:`Pour atteindre ${target}`};
-  }
-  const c1={v:1,n:rnd(6,18)},c2={v:5,n:rnd(5,14)},c3={v:25,n:rnd(3,9)},c4={v:100,n:rnd(2,5)},c5={v:500,n:rnd(0,2)};
-  const a=c1.n+c2.n*5+c3.n*25+c4.n*100+c5.n*500;
-  const parts=[c5.n?`(${c5.n}×500)`:null,`(${c4.n}×100)`,`(${c3.n}×25)`,`(${c2.n}×5)`,`(${c1.n}×1)`].filter(Boolean);
-  return {game:'chips',ctx:'Gros stack',q:parts.join(' + '),ans:a,hint:'Comptage complet'};
+  const t=pick(['minChips','mixChange','stack','rendu']);
+  if(t==='minChips'){const amt=small*rnd(10,120),g=greedyChips(amt,V);
+    if(g.rest!==0)return {game:'chips',ctx:'Change · euros → jetons',q:`${amt} € en jetons de ${small}`,ans:amt/small,hint:`${amt} ÷ ${small}`};
+    return {game:'chips',ctx:'Le moins de jetons possible',q:`${amt} € — combien de jetons au minimum ?`,
+      ans:g.count,hint:g.parts.map(p=>`${p.n}×${p.v}`).join(' + '),chipsView:g.parts};}
+  if(t==='mixChange'){const c=v(),other=V.length>1?pick(V.filter(x=>x!==c)):null;
+    const nb=rnd(1,4),amt=c*rnd(10,40);
+    const rest=other==null?-1:amt-nb*other;
+    if(rest<=0||rest%c!==0)return {game:'chips',ctx:'Change · euros → jetons',q:`${amt} € en jetons de ${c}`,ans:amt/c,hint:`${amt} ÷ ${c}`};
+    return {game:'chips',ctx:'Change mixte',q:`${amt} € : ${nb} jetons de ${other}, le reste en ${c}`,
+      ans:rest/c,hint:`${amt} − ${nb*other} = ${rest}, ÷ ${c}`};}
+  if(t==='rendu'){const c=v(),given=c*rnd(20,60),spent=c*rnd(3,15);
+    return {game:'chips',ctx:'Rendu client',q:`${given} € − ${spent} € à rendre en jetons de ${c}`,
+      ans:(given-spent)/c,hint:`Reste ${given-spent} €, ÷ ${c}`};}
+  const ps=V.map(x=>({v:x,n:rnd(1,12)}));
+  return {game:'chips',ctx:'Gros stack',q:ps.map(p=>`(${p.n}×${p.v})`).join(' + '),
+    ans:sum(ps.map(p=>p.n*p.v)),hint:'Comptage complet',chipsView:ps};
 }
 
 /* --- Tables : couverture garantie de ×1 à ×20 ---
@@ -896,16 +1008,92 @@ function genCombos(d){
 }
 const genCombosG=d=>{const q=genCombos(d);q.game='combos';return q;};
 
-const GENS={roulette:genRoulette,combos:genCombosG,cylindre:genCylindre,annonces:genAnnonces,
-  blackjack:genBlackjack,baccarat:genBaccarat,texas:genTexas,ultimate:genUltimate,chips:genChips,tables:genTables};
-const MIX_GAMES=['roulette','combos','cylindre','annonces','blackjack','baccarat','texas','ultimate','chips','tables'];
-function genMix(d,tables){
-  const g=pick(MIX_GAMES);
-  return g==='tables'?genTables(d,tables):GENS[g](d);
+/* ---------------- PAIEMENTS ROULETTE (types de paris réglables) ---------------- */
+function activeBets(opts){
+  const ids=(opts&&opts.bets&&opts.bets.length)?opts.bets:DEF_BETS;
+  const list=BET_TYPES.filter(b=>ids.includes(b.id));
+  return list.length?list:BET_TYPES.filter(b=>DEF_BETS.includes(b.id));
 }
-function genQuestion(game,d,tables){
-  if(game==='mix')return genMix(d,tables);
+function genPaiements(d,opts){
+  const L=effL(LVL[d]),B=DIFFS[d].bets,bet=()=>pick(B);
+  const T=activeBets(opts);
+  const one=()=>{const t=pick(T),b=bet();return {t,b};};
+  if(L===1){
+    const {t,b}=one();
+    return {game:'paiements',ctx:'Paiement · '+t.n,q:`${b} × ${t.r}`,ans:b*t.r,hint:`${t.n} = ${t.r} pour 1`};
+  }
+  if(L===2){
+    if(coin()){const {t,b}=one();
+      return {game:'paiements',ctx:'Mise comprise · '+t.n,q:`${b} × ${t.r+1}`,ans:b*(t.r+1),hint:'Gain + mise rendue'};}
+    const a=one(),c=one();
+    return {game:'paiements',ctx:'2 paris gagnants',q:`(${a.b}×${a.t.r}) + (${c.b}×${c.t.r})`,
+      ans:a.b*a.t.r+c.b*c.t.r,hint:`${a.t.n} + ${c.t.n}`};
+  }
+  if(L===3){
+    if(coin()){const t=pick(T),n=rnd(2,5),b=bet();
+      return {game:'paiements',ctx:`${n} ${plu(n,t.n.toLowerCase())} gagnants`,q:`${b} × ${t.r} × ${n}`,
+        ans:b*t.r*n,hint:`${n} fois le même paiement`};}
+    const ps=Array.from({length:3},one);
+    return {game:'paiements',ctx:'3 paris gagnants',q:ps.map(x=>`(${x.b}×${x.t.r})`).join(' + '),
+      ans:sum(ps.map(x=>x.b*x.t.r)),hint:ps.map(x=>x.t.n).join(' + ')};
+  }
+  if(L===4){
+    if(coin()){const ps=Array.from({length:3},one);
+      return {game:'paiements',ctx:'3 paris · mises comprises',q:ps.map(x=>`(${x.b}×${x.t.r+1})`).join(' + '),
+        ans:sum(ps.map(x=>x.b*(x.t.r+1))),hint:ps.map(x=>x.t.n).join(' + ')};}
+    const {t,b}=one(),k=rnd(2,4);
+    return {game:'paiements',ctx:'Pièces empilées · '+t.n,q:`${k} pièces de ${b} × ${t.r}`,
+      ans:k*b*t.r,hint:`${k} × ${b} = ${k*b} misé`};
+  }
+  const ps=Array.from({length:4},one);
+  if(coin())
+    return {game:'paiements',ctx:'Rush · 4 paris',q:ps.map(x=>`(${x.b}×${x.t.r})`).join(' + '),
+      ans:sum(ps.map(x=>x.b*x.t.r)),hint:ps.map(x=>x.t.n).join(' + ')};
+  const tot=sum(ps.map(x=>x.b*x.t.r)),mise=sum(ps.map(x=>x.b));
+  return {game:'paiements',ctx:'Gain net · 4 paris',q:`${ps.map(x=>`(${x.b}×${x.t.r})`).join(' + ')} − ${mise}`,
+    ans:tot-mise,hint:'Total des gains moins les mises engagées'};
+}
+
+/* ---------------- VOISINS : citer le numéro et ses voisins ---------------- */
+function genVoisins(d){
+  const L=effL(LVL[d]);
+  const k=L<=1?1:L<=3?2:L===4?3:4;
+  const n=pick(WHEEL);
+  const seq=neighbors(n,k);            // ordre réel du cylindre, centre au milieu
+  return {game:'voisins',ctx:`Le ${n} et les ${k} voisins`,
+    q:`Cite le ${n} et ses ${k} voisins`,
+    seq,given:[k],center:n,k,
+    seqHelp:'Dans l’ordre du cylindre, de gauche à droite',
+    hint:seq.join(' · '),
+    revealFocus:seq,revealHi:[n]};
+}
+
+/* ---------------- REMPLIR LE CYLINDRE ---------------- */
+const FILL_LEN={1:5,2:9,3:13,4:19,5:37};
+function genWheelfill(d){
+  const len=FILL_LEN[LVL[d]]||9;
+  const start=len===37?0:pick(WHEEL);
+  const i0=wIdx(start);
+  const seq=Array.from({length:len},(_,i)=>WHEEL[(i0+i)%37]);
+  return {game:'wheelfill',ctx:len===37?'Cylindre entier':`${len} cases à la suite`,
+    q:len===37?'Reconstitue tout le cylindre à partir du 0'
+              :`Continue le cylindre à partir du ${start}`,
+    seq,given:[0],start,
+    seqHelp:'Sens horaire, case après case',
+    hint:`Départ ${start} → ${seq[1]} → ${seq[2]}…`,
+    revealFocus:seq,revealHi:[start],wheelBoard:true};
+}
+
+const GENS={roulette:genRoulette,paiements:genPaiements,combos:genCombosG,cylindre:genCylindre,
+  voisins:genVoisins,wheelfill:genWheelfill,annonces:genAnnonces,
+  blackjack:genBlackjack,baccarat:genBaccarat,texas:genTexas,ultimate:genUltimate,chips:genChips,tables:genTables};
+/* le Mix évite les exercices de mémoire longs (séquences) : ils ont leur propre mode */
+const MIX_GAMES=['roulette','paiements','combos','cylindre','annonces','blackjack','baccarat','texas','ultimate','chips','tables'];
+function genQuestion(game,d,tables,opts){
+  if(game==='mix')game=pick(MIX_GAMES);
   if(game==='tables')return genTables(d,tables);
+  if(game==='chips')return genChips(d,opts);
+  if(game==='paiements'||game==='combos')return GENS[game](d,opts);
   return GENS[game](d);
 }
 /*GEN-END*/
@@ -929,9 +1117,10 @@ const CHALL_BONUS=40;
 
 const CHALL_POOL=[
   {id:'tables',game:'tables',target:12},
-  {id:'roulette',game:'roulette',target:10},
+  {id:'paiements',game:'paiements',target:10},
   {id:'combos',game:'combos',target:8},
   {id:'cylindre',game:'cylindre',target:10},
+  {id:'voisins',game:'voisins',target:10},
   {id:'annonces',game:'annonces',target:8},
   {id:'blackjack',game:'blackjack',target:10},
   {id:'baccarat',game:'baccarat',target:8},
@@ -953,12 +1142,15 @@ function defaultStats(){
   return {xp:0,total:0,correct:0,bestStreak:0,timeMs:0,timeN:0,
     byGame:{},errors:[],daily:{},challs:{},challDone:{},
     streakDays:0,lastDay:null,bests:{},sessions:[],
-    settings:{sound:true,vibe:true}};
+    settings:{sound:true,vibe:true},
+    opts:{bets:[...DEF_BETS],chips:[...DEF_CHIPS],tables:[...ESS_TABLES]}};
 }
 function loadStats(){
   try{
     const raw=localStorage.getItem(KEY);
-    if(raw){const s=JSON.parse(raw);return Object.assign(defaultStats(),s,{settings:Object.assign({sound:true,vibe:true},s.settings||{})});}
+    if(raw){const s=JSON.parse(raw);const d=defaultStats();
+      return Object.assign(d,s,{settings:Object.assign(d.settings,s.settings||{}),
+        opts:Object.assign(d.opts,s.opts||{})});}
     const old=localStorage.getItem('croupier_v43');
     if(old){
       const o=JSON.parse(old),s=defaultStats();
@@ -999,10 +1191,13 @@ function vibe(p){if(S.settings.vibe&&navigator.vibrate)try{navigator.vibrate(p);
 
 /* ---------- toasts & confetti ---------- */
 function toast(icon,txt,sub,gold){
+  const box=$('toasts');
+  // au maximum 3 messages à l'écran : au-delà ils masqueraient le jeu
+  while(box.children.length>=3)box.removeChild(box.firstChild);
   const el=document.createElement('div');
   el.className='toast'+(gold?' gold':'');
   el.innerHTML=`<span class="tic">${icon}</span><span>${esc(txt)}${sub?`<span class="tsub">${esc(sub)}</span>`:''}</span>`;
-  $('toasts').appendChild(el);
+  box.appendChild(el);
   setTimeout(()=>{el.style.transition='opacity .3s';el.style.opacity='0';setTimeout(()=>el.remove(),320);},2600);
 }
 function confetti(n=46){
@@ -1079,14 +1274,15 @@ let tick=null;
 
 function startSession(game,mode,diff,tables,revision){
   if(tick)clearInterval(tick);
-  const cfg=DIFFS[diff];
   sess={
     game,mode,diff,tables:tables||[...UI.selTables],
+    opts:{bets:[...(S.opts.bets||DEF_BETS)],chips:[...(S.opts.chips||DEF_CHIPS)]},
     ok:0,err:0,combo:0,bestCombo:0,xp:0,
     lives:mode==='survie'?3:0,
     chrono:mode==='chrono'?60:0,
     qLimit:0,qLeft:0,q:null,ans:'',locked:false,
     qStart:0,times:[],paused:false,over:false,
+    seqIdx:0,seqVals:[],
     isRevision:!!revision,queue:revision?pickN(S.errors,S.errors.length):null,
     started:Date.now()
   };
@@ -1099,6 +1295,7 @@ function questionTime(){
   const base=DIFFS[sess.diff].time;
   if(sess.mode==='libre')return 0;
   if(sess.mode==='chrono')return 0;
+  // sur une séquence, le temps s'applique à chaque case, pas à toute la suite
   if(sess.mode==='survie')return Math.max(base*0.45,base*(1-sess.ok*0.018));
   return base;
 }
@@ -1109,12 +1306,69 @@ function nextQ(){
     const e=sess.queue.shift();
     sess.q={...e,isRevision:true};
   }else{
-    sess.q=genQuestion(sess.game,sess.diff,sess.tables);
+    sess.q=genQuestion(sess.game,sess.diff,sess.tables,sess.opts);
   }
   sess.ans='';sess.locked=false;sess.pickedIdx=null;
+  // préparation d'une question en séquence : les cases données sont pré-remplies
+  if(sess.q.seq){
+    sess.seqIdx=0;
+    sess.seqVals=sess.q.seq.map((v,i)=>(sess.q.given||[]).includes(i)?{v,ok:true,given:true}:null);
+    while(sess.seqIdx<sess.q.seq.length&&sess.seqVals[sess.seqIdx])sess.seqIdx++;
+  }else{sess.seqIdx=0;sess.seqVals=[];}
   sess.qLimit=questionTime();sess.qLeft=sess.qLimit;
   sess.qStart=Date.now();
   paintQuestion();
+}
+
+/* libellé d'une case de séquence, réutilisé comme question de révision */
+function seqSlotLabel(q,i){
+  if(q.game==='voisins'){
+    const off=i-q.k;
+    if(off===0)return `Centre : ${q.center}`;
+    return `Voisin ${off>0?'+':'−'}${Math.abs(off)} du ${q.center}`;
+  }
+  return `Numéro après le ${q.seq[i-1]} sur le cylindre ?`;
+}
+
+/* validation d'une case de séquence : chaque case compte comme une réponse */
+function submitSeq(){
+  const q=sess.q,i=sess.seqIdx;
+  if(i>=q.seq.length)return;
+  const raw=sess.ans;
+  if(raw==='')return;
+  const v=parseInt(raw,10);
+  if(isNaN(v))return;
+  const ok=v===q.seq[i];
+  const ms=Date.now()-sess.qStart;
+  sess.seqVals[i]={v,ok};
+  sess.times.push(ms);
+  // enregistrer la case comme une réponse à part entière (stats, XP, révision)
+  const slotQ={game:q.game,ctx:q.ctx,q:seqSlotLabel(q,i),ans:q.seq[i],isRevision:q.isRevision};
+  if(ok){
+    sess.ok++;sess.combo++;sess.bestCombo=Math.max(sess.bestCombo,sess.combo);
+    if(sess.combo>S.bestStreak)S.bestStreak=sess.combo;
+    sess.xp+=recordAnswer(true,slotQ,ms,sess);
+    sfx.ok();vibe(14);
+    if(sess.combo%5===0){confetti(18);sfx.combo();}
+  }else{
+    sess.err++;sess.combo=0;
+    recordAnswer(false,slotQ,ms,sess);
+    sfx.ko();vibe([50,30,50]);
+    if(sess.mode==='survie')sess.lives--;
+  }
+  sess.ans='';
+  // avancer jusqu'à la prochaine case à remplir
+  do{sess.seqIdx++;}while(sess.seqIdx<q.seq.length&&sess.seqVals[sess.seqIdx]);
+  paintSeq();paintStats();
+  if(sess.mode==='survie'&&sess.lives<=0){sess.locked=true;setTimeout(endSession,1200);return;}
+  if(sess.seqIdx>=q.seq.length){ // séquence terminée
+    sess.locked=true;
+    const allOk=sess.seqVals.every(s=>s&&s.ok);
+    paintSeqDone(allOk);
+    setTimeout(()=>{if(sess&&!sess.over)nextQ();},allOk?900:2200);
+  }else{
+    sess.qStart=Date.now();sess.qLeft=sess.qLimit;
+  }
 }
 
 function gameTick(){
@@ -1130,12 +1384,17 @@ function gameTick(){
     sess.qLeft-=0.1;
     const b=$('g-tfill');
     if(b&&sess.mode!=='chrono'){const p=Math.max(0,sess.qLeft/sess.qLimit*100);b.style.width=p+'%';b.className=p<25?'d':p<50?'w':'';}
-    if(sess.qLeft<=0)answerResult(false,true);
+    if(sess.qLeft<=0){
+      if(sess.q&&sess.q.seq){sess.ans='-1';submitSeq();}  // case ratée, on avance
+      else answerResult(false,true);
+    }
   }
 }
 
 function submitAnswer(){
-  if(!sess||sess.locked||sess.ans===''||sess.ans==='-'||sess.ans==='.')return;
+  if(!sess||sess.locked)return;
+  if(sess.q&&sess.q.seq)return submitSeq();
+  if(sess.ans===''||sess.ans==='-'||sess.ans==='.')return;
   const v=parseFloat(sess.ans.replace(',','.'));
   if(isNaN(v))return;
   answerResult(Math.abs(v-sess.q.ans)<0.001,false);
@@ -1245,7 +1504,7 @@ const UI={
   selGame:'roulette',
   selMode:'libre',
   selDiff:localStorage.getItem('cm5_diff')||'normal',
-  selTables:[...ESS_TABLES],
+  selTables:(S.opts&&S.opts.tables&&S.opts.tables.length)?[...S.opts.tables]:[...ESS_TABLES],
   learnNum:0,learnK:2,
   setLearnNum(n){UI.learnNum=n;render('learn',{tab:'cylindre'});},
   setLearnK(k){UI.learnK=k;render('learn',{tab:'cylindre'});},
@@ -1255,7 +1514,12 @@ const UI={
   openSetup(g){UI.selGame=g;render('setup');},
   setMode(m){UI.selMode=m;render('setup');},
   setDiff(d){UI.selDiff=d;localStorage.setItem('cm5_diff',d);render('setup');},
-  togTable(n){const t=UI.selTables;UI.selTables=t.includes(n)?t.filter(x=>x!==n):[...t,n];render('setup');},
+  togTable(n){const t=UI.selTables;UI.selTables=t.includes(n)?t.filter(x=>x!==n):[...t,n];S.opts.tables=[...UI.selTables];save();render('setup');},
+  setTables(k){UI.selTables=k==='ess'?[...ESS_TABLES]:k==='all'?[...ALL_TABLES]:[];S.opts.tables=[...UI.selTables];save();render('setup');},
+  togBet(id){const b=S.opts.bets;S.opts.bets=b.includes(id)?b.filter(x=>x!==id):[...b,id];save();render('setup');},
+  setBets(k){S.opts.bets=k==='all'?BET_TYPES.map(b=>b.id):[...DEF_BETS];save();render('setup');},
+  togChip(v){const c=S.opts.chips;S.opts.chips=c.includes(v)?c.filter(x=>x!==v):[...c,v];save();render('setup');},
+  setChips(k){S.opts.chips=k==='all'?CHIP_VALS.map(c=>c.v):k==='fr'?[1,2,5,10,20,50,100]:[...DEF_CHIPS];save();render('setup');},
   launch(){startSession(UI.selGame,UI.selMode,UI.selDiff,UI.selTables);},
   startChall(chId){
     const ch=todayChalls().find(c=>c.id===chId);if(!ch)return;
@@ -1294,6 +1558,13 @@ function render(view,data){
 
 /* ---------- APPRENDRE : fiches de révision ---------- */
 const LEARN_TABS={cylindre:'🎯 Cylindre',annonces:'📣 Annonces',paiements:'💰 Paiements',figures:'🧮 Figures'};
+/* depuis chaque fiche, accès direct aux exercices correspondants */
+const LEARN_TRAIN={
+  cylindre:['voisins','wheelfill','cylindre'],
+  annonces:['annonces','cylindre'],
+  paiements:['paiements','blackjack','baccarat'],
+  figures:['combos','paiements']
+};
 
 /* roue en cercle, à l'échelle, avec le numéro sélectionné et ses voisins */
 function rWheelDisk(center,k){
@@ -1411,6 +1682,13 @@ function rLearn(tab){
     <div class="tabs">${Object.entries(LEARN_TABS).map(([k,l])=>
       `<button type="button" class="${k===tab?'on':''}" onclick="UI.learn('${k}')">${l}</button>`).join('')}</div>
     ${body}
+    <div class="panel">
+      <div class="panel-t">S’entraîner sur cette fiche</div>
+      <div class="ggrid">
+        ${(LEARN_TRAIN[tab]||[]).map(k=>`<div class="gcard" style="--gc:${GAMES[k].color}" onclick="UI.openSetup('${k}')">
+          <div class="ic">${GAMES[k].icon}</div><div class="nm">${GAMES[k].name}</div><div class="ds">${GAMES[k].desc}</div></div>`).join('')}
+      </div>
+    </div>
   </div>`;
 }
 
@@ -1478,18 +1756,19 @@ function rHome(){
       </div>
     </div>
 
-    <div class="sect-t">Tables de jeu</div>
-    <div class="ggrid">
-      ${Object.entries(GAMES).map(([k,g])=>{
-        const st=S.byGame[k],a=st&&st.t?Math.round(st.c/st.t*100):null;
-        return `<div class="gcard" style="--gc:${g.color}" onclick="UI.openSetup('${k}')">
-          ${a!=null?`<div class="acc mono">${a}%</div>`:''}
-          <div class="ic">${g.icon}</div>
-          <div class="nm">${g.name}</div>
-          <div class="ds">${g.desc}</div>
-        </div>`;
-      }).join('')}
-    </div>
+    ${Object.entries(CATS).map(([cat,label])=>`
+      <div class="sect-t">${label}</div>
+      <div class="ggrid">
+        ${Object.entries(GAMES).filter(([,g])=>g.cat===cat).map(([k,g])=>{
+          const st=S.byGame[k],a=st&&st.t?Math.round(st.c/st.t*100):null;
+          return `<div class="gcard${cat==='mix'?' span2':''}" style="--gc:${g.color}" onclick="UI.openSetup('${k}')">
+            ${a!=null?`<div class="acc mono">${a}%</div>`:''}
+            <div class="ic">${g.icon}</div>
+            <div class="nm">${g.name}</div>
+            <div class="ds">${g.desc}</div>
+          </div>`;
+        }).join('')}
+      </div>`).join('')}
 
     <div class="sect-t">Apprendre & suivre</div>
     <div class="ggrid">
@@ -1512,7 +1791,8 @@ function rHome(){
 /* ---------- setup ---------- */
 function rSetup(){
   const g=GAMES[UI.selGame],cfg=DIFFS[UI.selDiff];
-  const isTables=UI.selGame==='tables'||UI.selGame==='mix';
+  const opt=g.opts;
+  const blocked=(opt==='tables'&&!UI.selTables.length)||(opt==='bets'&&!S.opts.bets.length)||(opt==='chips'&&!S.opts.chips.length);
   return `<div class="wrap fadeUp">
     ${rHeader()}
     <button class="back" onclick="UI.home()">← Retour</button>
@@ -1541,7 +1821,7 @@ function rSetup(){
       </div>
     </div>
 
-    ${isTables?`<div class="panel">
+    ${opt==='tables'?`<div class="panel">
       <div class="panel-t">Tables travaillées ${UI.selGame==='mix'?'(pour les questions ×)':''}</div>
       <div class="tgrid" style="margin-bottom:10px">
         ${ESS_TABLES.map(n=>`<div class="tbtn ess ${UI.selTables.includes(n)?'on':''}" onclick="UI.togTable(${n})">${tLabel(n)}</div>`).join('')}
@@ -1549,11 +1829,38 @@ function rSetup(){
       <div class="tgrid">
         ${ALL_TABLES.filter(n=>!ESS_TABLES.includes(n)).map(n=>`<div class="tbtn ${UI.selTables.includes(n)?'on':''}" onclick="UI.togTable(${n})">${tLabel(n)}</div>`).join('')}
       </div>
+      <div class="qk"><button type="button" onclick="UI.setTables('ess')">Essentielles</button><button type="button" onclick="UI.setTables('all')">Toutes</button><button type="button" onclick="UI.setTables('none')">Aucune</button></div>
       <div class="lrow" style="margin-top:6px"><span>Multiplicateurs</span><b>×1 → ×${Math.min(cfg.tmax,MULT_MAX)}</b></div>
       <div class="lnote">La table de <b>1,5</b> travaille le paiement Blackjack 3:2. Tous les multiplicateurs de 1 à 20 sont parcourus sans trou.</div>
     </div>`:''}
 
-    <button class="btn btn-p btn-w" onclick="UI.launch()" ${isTables&&!UI.selTables.length?'disabled':''}>
+    ${opt==='bets'?`<div class="panel">
+      <div class="panel-t">Paris travaillés</div>
+      <div class="optgrid">
+        ${BET_TYPES.map(b=>`<button type="button" class="opt ${S.opts.bets.includes(b.id)?'on':''}" onclick="UI.togBet('${b.id}')">
+          <span class="oi">${b.ic}</span><span class="on2">${b.n}</span><span class="ov mono">×${b.r}</span></button>`).join('')}
+      </div>
+      <div class="qk"><button type="button" onclick="UI.setBets('inside')">Paris intérieurs</button><button type="button" onclick="UI.setBets('all')">Tous</button></div>
+      ${!S.opts.bets.length?'<div class="lnote" style="color:var(--red)">Sélectionne au moins un pari.</div>':''}
+    </div>`:''}
+
+    ${opt==='chips'?`<div class="panel">
+      <div class="panel-t">Valeurs de jetons</div>
+      <div class="optgrid">
+        ${CHIP_VALS.map(c=>`<button type="button" class="opt ${S.opts.chips.includes(c.v)?'on':''}" onclick="UI.togChip(${c.v})">
+          <span class="cdot" style="background:${c.c}"></span><span class="on2">${c.v} €</span><span class="ov">${c.n}</span></button>`).join('')}
+      </div>
+      <div class="qk"><button type="button" onclick="UI.setChips('def')">5·10·20·50·100</button><button type="button" onclick="UI.setChips('fr')">Françaises</button><button type="button" onclick="UI.setChips('all')">Toutes</button></div>
+      ${!S.opts.chips.length?'<div class="lnote" style="color:var(--red)">Sélectionne au moins une valeur.</div>':''}
+    </div>`:''}
+
+    ${GAMES[UI.selGame].seq?`<div class="panel">
+      <div class="lrow"><span>${UI.selGame==='wheelfill'?'Cases à reconstituer':'Voisins de chaque côté'}</span>
+        <b>${UI.selGame==='wheelfill'?(FILL_LEN[LVL[UI.selDiff]]||9):(LVL[UI.selDiff]<=1?1:LVL[UI.selDiff]<=3?2:LVL[UI.selDiff]===4?3:4)}</b></div>
+      <div class="lnote">Chaque case compte comme une réponse : tes statistiques et tes erreurs se remplissent case par case.</div>
+    </div>`:''}
+
+    <button class="btn btn-p btn-w" onclick="UI.launch()" ${blocked?'disabled':''}>
       ${MODES[UI.selMode].icon} Lancer · ${MODES[UI.selMode].label} ${cfg.label}
     </button>
   </div>`;
@@ -1626,16 +1933,17 @@ function paintQuestion(){
   // visuel contextuel : roue pour le cylindre, décomposition pour les figures
   const ex=$('g-extra');
   if(ex){
-    // sur une question à choix, ne montrer que le numéro demandé :
-    // surligner la zone entière donnerait la réponse
-    if(q.choices)ex.innerHTML=q.annHit!=null?rWheelMini([],[q.annHit]):'';
-    else if(q.wheelFocus)ex.innerHTML=rWheelMini(q.wheelFocus,q.wheelHi);
-    else if(q.ann)ex.innerHTML=rWheelMini(annNums(ANNONCES.find(a=>a.id===q.ann)||ANNONCES[0]),q.annHit!=null?[q.annHit]:[]);
+    // La mini-roue liste les 37 cases DANS L'ORDRE : l'afficher pendant une
+    // question de cylindre donnerait la réponse. On ne montre donc que le
+    // strict nécessaire ici, le reste est révélé dans le retour.
+    if(q.seq)ex.innerHTML=rSeq();
+    else if(q.chipsView)ex.innerHTML=rChips(q.chipsView);
+    else if(q.choices)ex.innerHTML=q.annHit!=null?rWheelMini([],[q.annHit]):'';
     else if(q.parts&&q.parts.length)ex.innerHTML=rParts(q.parts,q.denom);
     else ex.innerHTML='';
   }
-  // idem pour l'indice : il nomme la bonne annonce, on le garde pour le retour
-  $('g-hint').textContent=q.choices?'':(q.hint||'');
+  // l'indice donne la réponse sur les QCM et les séquences : gardé pour le retour
+  $('g-hint').textContent=(q.choices||q.seq)?(q.seqHelp||''):(q.hint||'');
   $('g-fbk').innerHTML='';
   // zone de réponse : choix multiples ou clavier numérique
   const an=$('g-answer');
@@ -1647,10 +1955,50 @@ function paintQuestion(){
   if(sess.qLimit>0){const b=$('g-tfill');if(b){b.style.width='100%';b.className='';}}
   paintAns();
 }
+
+/* piles de jetons colorées */
+function rChips(view){
+  return `<div class="chipsrow">${view.map(p=>{
+    const ci=chipInfo(p.v);
+    return `<div class="cstack"><div class="cst">${Array.from({length:Math.min(p.n,8)},(_,i)=>
+      `<span class="cdisc" style="background:${ci.c};bottom:${i*5}px"></span>`).join('')}</div>
+      <div class="clab"><b>${p.n}</b>×${p.v}</div></div>`;
+  }).join('')}</div>`;
+}
+
+/* cases d'une séquence (voisins, cylindre) */
+function rSeq(){
+  const q=sess.q;
+  return `<div class="seqwrap"><div class="seqbox">${q.seq.map((v,i)=>{
+    const s=sess.seqVals[i];
+    const cur=i===sess.seqIdx&&!sess.locked;
+    let cl='sq',txt='·';
+    if(s&&s.given){cl+=' given';txt=s.v;}
+    else if(s){cl+=s.ok?' ok':' ko';txt=s.ok?s.v:(s.v<0?'—':s.v);}
+    else if(cur)cl+=' cur';
+    return `<span class="${cl}">${txt}</span>`;
+  }).join('')}</div>
+  <div class="seqcount mono">${sess.seqVals.filter(Boolean).length}/${q.seq.length}</div></div>`;
+}
+function paintSeq(){
+  const ex=$('g-extra');if(ex)ex.innerHTML=rSeq();
+  paintAns();
+}
+function paintSeqDone(allOk){
+  const q=sess.q,fb=$('g-fbk'),card=$('g-card');
+  if(card)card.classList.add(allOk?'ok':'ko');
+  const wrong=sess.seqVals.map((s,i)=>(s&&!s.ok)?`${q.seq[i]}`:null).filter(Boolean);
+  if(fb)fb.innerHTML=allOk
+    ? `<div class="fbk ok">✓ Séquence complète !</div>`
+    : `<div class="fbk ko">Suite exacte : <span class="big mono">${q.seq.join(' · ')}</span><span class="tip">${wrong.length} erreur(s) — regarde la roue ci-dessus</span></div>`;
+  const ex=$('g-extra');
+  if(ex&&q.revealFocus)ex.innerHTML=rSeq()+rWheelMini(q.revealFocus,q.revealHi);
+}
 function paintAns(){
   const el=$('g-ans');if(!el||(sess.q&&sess.q.choices))return;
   el.classList.remove('ok','ko');
-  el.innerHTML=sess.ans?`${esc(sess.ans.replace('.',','))}<span class="crt"></span>`:'<span class="ph">Ta réponse…</span><span class="crt"></span>';
+  const ph=(sess.q&&sess.q.seq)?`Case ${sess.seqIdx+1}…`:'Ta réponse…';
+  el.innerHTML=sess.ans?`${esc(sess.ans.replace('.',','))}<span class="crt"></span>`:`<span class="ph">${ph}</span><span class="crt"></span>`;
 }
 function paintStats(){
   const ok=$('g-ok'),er=$('g-err');
@@ -1674,11 +2022,11 @@ function paintFeedback(ok,timedOut){
     if(!ok&&sess.pickedIdx!=null){const cb=$('ch-'+sess.pickedIdx);if(cb)cb.classList.add('bad');}
     const box=document.querySelector('.choices');if(box)box.classList.add('locked');
   }
-  if(q.choices&&q.ann){ // on révèle la zone complète une fois la réponse donnée
-    const ex=$('g-extra');
-    if(ex)ex.innerHTML=rWheelMini(annNums(ANNONCES.find(a=>a.id===q.ann)||ANNONCES[0]),q.annHit!=null?[q.annHit]:[]);
-    const hn=$('g-hint');if(hn)hn.textContent=q.hint||'';
-  }
+  // on révèle après coup ce qui aurait trahi la réponse pendant la question
+  const ex=$('g-extra'),hn=$('g-hint');
+  if(q.ann&&ex)ex.innerHTML=rWheelMini(annNums(ANNONCES.find(a=>a.id===q.ann)||ANNONCES[0]),q.annHit!=null?[q.annHit]:[]);
+  else if(q.wheelFocus&&ex)ex.innerHTML=rWheelMini(q.wheelFocus,q.wheelHi);
+  if(hn&&(q.choices||q.wheelFocus))hn.textContent=q.hint||'';
   if(ok){
     fb.innerHTML=`<div class="fbk ok">✓ Exact ! <span class="big mono">${esc(good)}</span></div>`;
   }else{

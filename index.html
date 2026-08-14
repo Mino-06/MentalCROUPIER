@@ -6,6 +6,7 @@
 <meta name="theme-color" content="#07090c">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Croupier">
 <title>CroupierMental v5 — Calcul mental pour croupiers</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🎰</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,7 +36,8 @@ button{font-family:inherit;color:inherit}
 .bg-suits span{position:absolute;animation:drift 40s linear infinite}
 @keyframes drift{from{transform:translateY(110vh) rotate(0)}to{transform:translateY(-130vh) rotate(60deg)}}
 #app{position:relative;z-index:2;min-height:100dvh}
-.wrap{max-width:520px;margin:0 auto;padding:14px 16px calc(40px + env(safe-area-inset-bottom,0px))}
+/* safe areas iPhone : encoche/Dynamic Island en haut, barre home en bas */
+.wrap{max-width:520px;margin:0 auto;padding:calc(12px + env(safe-area-inset-top,0px)) 16px calc(40px + env(safe-area-inset-bottom,0px))}
 /* ---------- animations ---------- */
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes pop{0%{transform:scale(.92);opacity:0}65%{transform:scale(1.03)}100%{transform:scale(1);opacity:1}}
@@ -298,6 +300,14 @@ button{font-family:inherit;color:inherit}
 .tabs::-webkit-scrollbar{display:none}
 .tabs button{flex:0 0 auto;padding:11px 14px;min-height:44px;border-radius:10px;border:1px solid var(--border);background:var(--card);font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
 .tabs button.on{background:var(--accent);border-color:var(--accent);color:#04140d}
+.wn-modal{max-height:82dvh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.wn-list{display:flex;flex-direction:column;gap:8px}
+.wn-item{display:flex;align-items:center;gap:12px;width:100%;padding:12px 13px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;cursor:pointer;text-align:left;min-height:56px}
+.wn-item:active{transform:scale(.98);background:var(--card2)}
+.wn-item .wi{font-size:22px;flex:0 0 auto}
+.wn-item .wt{flex:1;font-size:13.5px;font-weight:800;min-width:0}
+.wn-item .wd{display:block;font-size:11px;font-weight:600;color:var(--text2);line-height:1.35}
+.wn-item .wa{color:var(--muted);font-size:18px;font-weight:700}
 
 /* ---------- réglages, séquences, jetons ---------- */
 .gcard.span2{grid-column:span 2}
@@ -331,7 +341,7 @@ button{font-family:inherit;color:inherit}
 /* ---------- durcissement mobile ---------- */
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{overscroll-behavior-y:contain;touch-action:manipulation;overflow-x:clip}
-button,.gcard,.dch,.qmode,.tbtn,.ng,.ch,.chip-btn,.gear,.logo,.wn{touch-action:manipulation}
+button,.gcard,.dch,.qmode,.tbtn,.ng,.ch,.chip-btn,.gear,.logo,.wn{touch-action:manipulation;-webkit-touch-callout:none}
 button,.sect-t,.panel-t,.gstat,.qbadge,.kpad,.tabs,.lrow span{-webkit-user-select:none;user-select:none}
 .wrap{width:100%;max-width:min(520px,100vw)}
 .qtext,.ab .t,.gcard .ds,.career-name{overflow-wrap:anywhere}
@@ -385,9 +395,10 @@ button,.sect-t,.panel-t,.gstat,.qbadge,.kpad,.tabs,.lrow span{-webkit-user-selec
 <script>
 'use strict';
 /* =====================================================================
-   CroupierMental v5.0 — entraînement de calcul mental pour croupiers
+   CroupierMental — entraînement de calcul mental pour croupiers
    Vanilla JS · zéro dépendance · fonctionne hors-ligne
 ===================================================================== */
+const APP_VER='6.1';
 
 /* ---------- utils ---------- */
 const $=id=>document.getElementById(id);
@@ -1031,7 +1042,7 @@ function genPaiements(d,opts){
   }
   if(L===3){
     if(coin()){const t=pick(T),n=rnd(2,5),b=bet();
-      return {game:'paiements',ctx:`${n} ${plu(n,t.n.toLowerCase())} gagnants`,q:`${b} × ${t.r} × ${n}`,
+      return {game:'paiements',ctx:`${n} paris identiques · ${t.n}`,q:`${b} × ${t.r} × ${n}`,
         ans:b*t.r*n,hint:`${n} fois le même paiement`};}
     const ps=Array.from({length:3},one);
     return {game:'paiements',ctx:'3 paris gagnants',q:ps.map(x=>`(${x.b}×${x.t.r})`).join(' + '),
@@ -1698,7 +1709,7 @@ function rHeader(){
   return `<header class="hdr">
     <div class="logo" onclick="UI.home()">
       <div class="logo-ic">🎰</div>
-      <div><div class="logo-tx">Croupier<b>Mental</b></div><div class="logo-sub">v5 · entraînement pro</div></div>
+      <div><div class="logo-tx">Croupier<b>Mental</b></div><div class="logo-sub">v${APP_VER} · entraînement pro</div></div>
     </div>
     <div class="hdr-r">
       ${S.streakDays>1?`<div class="chip-btn chip-fire"><span class="ico">🔥</span>${S.streakDays}j</div>`:''}
@@ -2173,6 +2184,10 @@ function openSettings(){
         <div class="tgl ${S.settings.sound?'on':''}" onclick="UI.toggle('sound')"></div></div>
       <div class="mrow"><div><div class="t">Vibrations</div><div class="d">Retour haptique (mobile)</div></div>
         <div class="tgl ${S.settings.vibe?'on':''}" onclick="UI.toggle('vibe')"></div></div>
+      <div class="mrow"><div><div class="t">Nouveautés</div><div class="d">Revoir les fonctionnalités récentes</div></div>
+        <button class="btn btn-s" style="padding:9px 14px;font-size:12px" onclick="UI.closeModal();UI.whatsNew()">✨ Voir</button></div>
+      <div class="mrow"><div><div class="t">Version</div><div class="d">CroupierMental</div></div>
+        <span class="mono" style="font-size:13px;color:var(--text2)">v${APP_VER}</span></div>
       <div class="mrow"><div><div class="t">Données</div><div class="d">Stockées localement sur cet appareil</div></div>
         <button class="btn btn-s" style="padding:9px 14px;font-size:12px" onclick="UI.resetAll()">Réinitialiser</button></div>
       <button class="btn btn-p btn-w" style="margin-top:14px" onclick="UI.closeModal()">Fermer</button>
@@ -2180,10 +2195,40 @@ function openSettings(){
   </div>`;
 }
 
+/* ---------- Nouveautés : affiché une fois par version ---------- */
+const WHATS_NEW=[
+  {ic:'🧭',t:'Voisins',d:'Cite un numéro et ses voisins, case par case',go:'voisins'},
+  {ic:'🧠',t:'Remplir le cylindre',d:'Reconstitue la roue de tête, jusqu’aux 37 cases',go:'wheelfill'},
+  {ic:'💰',t:'Paiements réglables',d:'Choisis les paris : plein, cheval, carré…',go:'paiements'},
+  {ic:'🪙',t:'Change euros ↔ jetons',d:'Valeurs de jetons au choix (5, 10, 20, 50, 100…)',go:'chips'},
+  {ic:'📣',t:'Annonces',d:'Tiers, Orphelins, Voisins du zéro, Jeu zéro',go:'annonces'},
+  {ic:'📚',t:'Fiches de révision',d:'Cylindre dessiné, annonces détaillées, figures',go:'learn'}
+];
+function showWhatsNew(){
+  $('modal').innerHTML=`<div class="mwrap" onclick="if(event.target===this)UI.closeModal()">
+    <div class="modal wn-modal">
+      <h3>✨ Nouveautés · v${APP_VER}</h3>
+      <div class="wn-list">
+        ${WHATS_NEW.map(w=>`<button type="button" class="wn-item" onclick="UI.closeModal();${w.go==='learn'?"UI.learn('cylindre')":`UI.openSetup('${w.go}')`}">
+          <span class="wi">${w.ic}</span>
+          <span class="wt">${w.t}<span class="wd">${w.d}</span></span>
+          <span class="wa">›</span>
+        </button>`).join('')}
+      </div>
+      <button class="btn btn-p btn-w" style="margin-top:14px" onclick="UI.closeModal()">C’est parti !</button>
+    </div>
+  </div>`;
+}
+UI.whatsNew=showWhatsNew;
+
 /* expose pour onclick inline */
 window.UI=UI;window.endSession=endSession;
 
 render('home');
+if(S.seenVer!==APP_VER){
+  S.seenVer=APP_VER;save();
+  setTimeout(showWhatsNew,450);
+}
 </script>
 </body>
 </html>

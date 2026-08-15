@@ -1,4 +1,4 @@
-# 🎰 CroupierMental v6
+# 🎰 CroupierMental v6.1
 
 Application d'entraînement au **calcul mental et à la mémoire du croupier** — un seul fichier HTML, zéro dépendance, fonctionne hors-ligne, pensée pour le téléphone.
 
@@ -62,10 +62,11 @@ Le contenu est vérifié automatiquement à chaque modification :
 - L'**ordre du cylindre** est contrôlé face à une référence ressaisie à la main ; voisins, opposés et zones vérifiés pour les 37 numéros
 - Les **annonces** sont validées structurellement : type de pari ↔ nombre de numéros ↔ ratio ↔ adjacence réelle sur le tapis, et la partition Voisins/Tiers/Orphelins = 37 numéros sans chevauchement
 - **Couverture ×1 à ×20 sans trou** vérifiée pour chaque difficulté
-- **68 vues contrôlées sur 4 tailles d'iPhone** (SE 320px → 15 Pro Max) : aucun débordement, **aucune cible tactile sous 44px** (recommandation Apple), aucune erreur JS
+- **85 vues contrôlées sur 5 tailles d'iPhone** (SE 320px → 15 Pro Max, iPhone 14 inclus) + test de singe (500 taps aléatoires) : aucun débordement, **aucune cible tactile sous 44px** (recommandation Apple), aucune erreur JS
 
 ## Historique
 
-- `index.html` — **v6** : exercice Voisins, remplissage du cylindre, paiements et change configurables, ergonomie mobile 44px
+- `index.html` — **v6.1** : écran Nouveautés, safe-area iPhone (encoche), polissage iOS
+- v6 : exercice Voisins, remplissage du cylindre, paiements et change configurables, ergonomie mobile 44px
 - v5.1 : cylindre, annonces, combinaisons, fiches de révision, tables 1→20 + 1,5
 - `croupier-mental-v4.3.html` — ancienne version (React + Babel via CDN)

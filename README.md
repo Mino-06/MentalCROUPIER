@@ -10,8 +10,8 @@ Application d'entraînement au **calcul mental et à la mémoire du croupier** �
 |---|---|
 | 💰 Paiements | Calcul de paiement avec **choix des paris travaillés** : plein, cheval, transversale, carré, sixain, douzaine, chance simple |
 | 🧮 Combinaisons | **Picture bets** : additions de pleins, chevaux, carrés, transversales, sixains — avec décomposition visuelle et conversion pièces → espèces |
-| 🧭 Voisins | **Cite un numéro et ses voisins** : les cases se remplissent une par une, centre donné, roue révélée à la fin |
-| 🧠 Remplir le cylindre | Reconstituer la roue de tête — 5 cases en Facile jusqu'aux **37 cases du cylindre entier** en Expert |
+| 🧭 Voisins | **Cite un numéro et ses voisins dans l'ordre croissant** (comme en salle) : les cases se remplissent une par une, centre donné, roue révélée à la fin |
+| 🧠 Remplir le cylindre | Reconstituer la roue de tête **dans l'ordre du cylindre** (sens horaire) — 5 cases en Facile jusqu'aux **37 cases du cylindre entier** en Expert |
 | 🎯 Calculs cylindre | Voisin de droite/gauche, n-ième voisin, numéro opposé, mise totale, paiement, gain net |
 | 🎡 Roulette complète | Tout le jeu mélangé |
 | 📣 Annonces | **Voisins du zéro (9 pièces), Tiers du cylindre (6), Orphelins (5), Jeu zéro (4)**, finales en plein — appartenance, mise, paiement, gain net |
@@ -58,7 +58,7 @@ Le contenu est vérifié automatiquement à chaque modification :
 
 - **350 000 questions générées, 295 000 vérifications indépendantes** — chaque réponse est recalculée séparément de l'énoncé affiché
 - Les **réglages sont vérifiés** : avec « sixain » seul, aucun autre ratio ne sort ; avec le jeton 20 seul, aucune autre valeur n'est citée
-- Les **séquences** (voisins, remplissage) sont contrôlées case par case contre l'ordre réel de la roue
+- Les **séquences** sont contrôlées case par case : voisins dans l'ordre croissant, remplissage contre l'ordre réel de la roue
 - L'**ordre du cylindre** est contrôlé face à une référence ressaisie à la main ; voisins, opposés et zones vérifiés pour les 37 numéros
 - Les **annonces** sont validées structurellement : type de pari ↔ nombre de numéros ↔ ratio ↔ adjacence réelle sur le tapis, et la partition Voisins/Tiers/Orphelins = 37 numéros sans chevauchement
 - **Couverture ×1 à ×20 sans trou** vérifiée pour chaque difficulté

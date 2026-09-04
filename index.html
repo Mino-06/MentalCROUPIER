@@ -767,14 +767,19 @@ function activeChips(opts){
   const vals=(opts&&opts.chips&&opts.chips.length)?[...opts.chips]:[...DEF_CHIPS];
   return vals.filter(v=>v>0).sort((a,b)=>a-b);
 }
-/* décomposition au moins de jetons possible, dans les valeurs disponibles */
-function greedyChips(amount,vals){
-  const out=[];let r=amount;
-  for(const v of [...vals].sort((a,b)=>b-a)){
-    const n=Math.floor(r/v);
-    if(n>0){out.push({v,n});r-=n*v;}
-  }
-  return {parts:out,rest:r,count:sum(out.map(o=>o.n))};
+/* décomposition au moins de jetons possible, dans les valeurs disponibles.
+   Calcul exact (programmation dynamique) : le glouton se trompe dès que 20 et
+   25 sont actifs ensemble (40 € = 2×20, pas 25+10+5). rest≠0 si impossible. */
+function fewestChips(amount,vals){
+  const V=[...vals].sort((a,b)=>b-a);
+  const best=new Array(amount+1).fill(Infinity),from=new Array(amount+1).fill(0);
+  best[0]=0;
+  for(let a=1;a<=amount;a++)for(const v of V)
+    if(v<=a&&best[a-v]+1<best[a]){best[a]=best[a-v]+1;from[a]=v;}
+  if(!isFinite(best[amount]))return {parts:[],rest:amount,count:0};
+  const cnt={};for(let a=amount;a>0;a-=from[a])cnt[from[a]]=(cnt[from[a]]||0)+1;
+  const parts=V.filter(v=>cnt[v]).map(v=>({v,n:cnt[v]}));
+  return {parts,rest:0,count:best[amount]};
 }
 function genChips(d,opts){
   const L=effL(LVL[d]);
@@ -823,7 +828,7 @@ function genChips(d,opts){
       return {game:'chips',ctx:'Rendu client',q:`${given} € − ${spent} € à rendre en jetons de ${c}`,
         ans:(given-spent)/c,hint:`Reste ${given-spent} €, ÷ ${c}`};}
     if(t==='minChips'){const amt=small*rnd(6,60);
-      const g=greedyChips(amt,V);
+      const g=fewestChips(amt,V);
       if(g.rest!==0)return {game:'chips',ctx:'Change · euros → jetons',q:`${amt} € en jetons de ${small}`,ans:amt/small,hint:`${amt} ÷ ${small}`};
       return {game:'chips',ctx:'Le moins de jetons possible',q:`${amt} € — combien de jetons au minimum ?`,
         ans:g.count,hint:g.parts.map(p=>`${p.n}×${p.v}`).join(' + '),chipsView:g.parts};}
@@ -834,7 +839,7 @@ function genChips(d,opts){
       ans:sum(ps.map(p=>p.n*p.v)),hint:`${ps.length} valeurs`,chipsView:ps};
   }
   const t=pick(['minChips','mixChange','stack','rendu']);
-  if(t==='minChips'){const amt=small*rnd(10,120),g=greedyChips(amt,V);
+  if(t==='minChips'){const amt=small*rnd(10,120),g=fewestChips(amt,V);
     if(g.rest!==0)return {game:'chips',ctx:'Change · euros → jetons',q:`${amt} € en jetons de ${small}`,ans:amt/small,hint:`${amt} ÷ ${small}`};
     return {game:'chips',ctx:'Le moins de jetons possible',q:`${amt} € — combien de jetons au minimum ?`,
       ans:g.count,hint:g.parts.map(p=>`${p.n}×${p.v}`).join(' + '),chipsView:g.parts};}
@@ -926,7 +931,7 @@ function genCylindre(d){
   }
   if(t==='opp'){
     const k2=rnd(1,2);
-    return {game:'cylindre',ctx:'Opposé + voisin',q:`Voisin ${k2>0?'à droite':''} du numéro opposé au ${n} ?`,
+    return {game:'cylindre',ctx:'Opposé + voisin',q:`${ordinal(k2)} voisin à droite du numéro opposé au ${n} ?`,
       ans:neighborAt(opposite(n),k2),hint:`Opposé du ${n}, puis ${k2} case(s) à droite`,wheelFocus:[n],wheelHi:[neighborAt(opposite(n),k2)]};
   }
   return {game:'cylindre',ctx:'Mise totale',q:`Le ${n} et les ${k} voisins par ${u}`,
@@ -1070,13 +1075,17 @@ function genVoisins(d){
   const L=effL(LVL[d]);
   const k=L<=1?1:L<=3?2:L===4?3:4;
   const n=pick(WHEEL);
-  const seq=neighbors(n,k);            // ordre réel du cylindre, centre au milieu
+  const wheel=neighbors(n,k);          // ordre réel du cylindre, centre au milieu
+  // Le croupier restitue les numéros dans l'ordre CROISSANT (comme en salle),
+  // pas dans l'ordre du cylindre : c'est l'exercice « Remplir le cylindre »
+  // qui travaille l'ordre de la roue.
+  const seq=[...wheel].sort((a,b)=>a-b);
   return {game:'voisins',ctx:`Le ${n} et les ${k} voisins`,
     q:`Cite le ${n} et ses ${k} voisins`,
-    seq,given:[k],center:n,k,
-    seqHelp:'Dans l’ordre du cylindre, de gauche à droite',
+    seq,given:[seq.indexOf(n)],center:n,k,
+    seqHelp:'Dans l’ordre croissant, du plus petit au plus grand',
     hint:seq.join(' · '),
-    revealFocus:seq,revealHi:[n]};
+    revealFocus:wheel,revealHi:[n]};
 }
 
 /* ---------------- REMPLIR LE CYLINDRE ---------------- */
@@ -1282,6 +1291,10 @@ function recordAnswer(ok,q,ms,sess){
 /* ============================ MOTEUR DE JEU ============================ */
 let sess=null;
 let tick=null;
+/* Enchaînement différé (question suivante, fin de partie) lié à LA session en
+   cours : si le joueur quitte et relance une partie entre-temps, l'ancien
+   minuteur ne doit pas sauter une question de la nouvelle partie. */
+function later(fn,ms){const s=sess;setTimeout(()=>{if(sess===s&&s&&!s.over)fn();},ms);}
 
 function startSession(game,mode,diff,tables,revision){
   if(tick)clearInterval(tick);
@@ -1333,11 +1346,8 @@ function nextQ(){
 
 /* libellé d'une case de séquence, réutilisé comme question de révision */
 function seqSlotLabel(q,i){
-  if(q.game==='voisins'){
-    const off=i-q.k;
-    if(off===0)return `Centre : ${q.center}`;
-    return `Voisin ${off>0?'+':'−'}${Math.abs(off)} du ${q.center}`;
-  }
+  if(q.game==='voisins')
+    return `Le ${q.center} et les ${q.k} voisins · ${ordinal(i+1)} numéro dans l’ordre croissant ?`;
   return `Numéro après le ${q.seq[i-1]} sur le cylindre ?`;
 }
 
@@ -1371,12 +1381,12 @@ function submitSeq(){
   // avancer jusqu'à la prochaine case à remplir
   do{sess.seqIdx++;}while(sess.seqIdx<q.seq.length&&sess.seqVals[sess.seqIdx]);
   paintSeq();paintStats();
-  if(sess.mode==='survie'&&sess.lives<=0){sess.locked=true;setTimeout(endSession,1200);return;}
+  if(sess.mode==='survie'&&sess.lives<=0){sess.locked=true;later(endSession,1200);return;}
   if(sess.seqIdx>=q.seq.length){ // séquence terminée
     sess.locked=true;
     const allOk=sess.seqVals.every(s=>s&&s.ok);
     paintSeqDone(allOk);
-    setTimeout(()=>{if(sess&&!sess.over)nextQ();},allOk?900:2200);
+    later(nextQ,allOk?900:2200);
   }else{
     sess.qStart=Date.now();sess.qLeft=sess.qLimit;
   }
@@ -1440,10 +1450,10 @@ function answerResult(ok,timedOut){
   paintFeedback(ok,timedOut);
   paintStats();
   if(sess.mode==='survie'&&sess.lives<=0){
-    setTimeout(endSession,1500);
+    later(endSession,1500);
     return;
   }
-  setTimeout(()=>{if(sess&&!sess.over)nextQ();},ok?550:1700);
+  later(nextQ,ok?550:1700);
 }
 
 function endSession(){
@@ -1868,6 +1878,9 @@ function rSetup(){
     ${GAMES[UI.selGame].seq?`<div class="panel">
       <div class="lrow"><span>${UI.selGame==='wheelfill'?'Cases à reconstituer':'Voisins de chaque côté'}</span>
         <b>${UI.selGame==='wheelfill'?(FILL_LEN[LVL[UI.selDiff]]||9):(LVL[UI.selDiff]<=1?1:LVL[UI.selDiff]<=3?2:LVL[UI.selDiff]===4?3:4)}</b></div>
+      <div class="lnote">${UI.selGame==='wheelfill'
+        ?'Tu reconstitues la roue dans l’ordre du cylindre, sens horaire, case après case.'
+        :'Tu cites les numéros dans l’ordre croissant (du plus petit au plus grand), comme en salle — pas dans l’ordre du cylindre.'}</div>
       <div class="lnote">Chaque case compte comme une réponse : tes statistiques et tes erreurs se remplissent case par case.</div>
     </div>`:''}
 
@@ -2197,7 +2210,7 @@ function openSettings(){
 
 /* ---------- Nouveautés : affiché une fois par version ---------- */
 const WHATS_NEW=[
-  {ic:'🧭',t:'Voisins',d:'Cite un numéro et ses voisins, case par case',go:'voisins'},
+  {ic:'🧭',t:'Voisins',d:'Cite un numéro et ses voisins dans l’ordre croissant, case par case',go:'voisins'},
   {ic:'🧠',t:'Remplir le cylindre',d:'Reconstitue la roue de tête, jusqu’aux 37 cases',go:'wheelfill'},
   {ic:'💰',t:'Paiements réglables',d:'Choisis les paris : plein, cheval, carré…',go:'paiements'},
   {ic:'🪙',t:'Change euros ↔ jetons',d:'Valeurs de jetons au choix (5, 10, 20, 50, 100…)',go:'chips'},
